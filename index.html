@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="회원 등록부터 얼굴인식 출입, 키오스크 결제, 자동문 연동까지. 피트니스 회원관리프로그램 체크짐 V2.">
+<title>체크짐 V2 리뉴얼 초안</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;800;900&family=Montserrat:ital,wght@0,700;0,800;1,800&display=swap">
+</head>
+<body>
+<style>
+/* Layout: zeroback.co.kr 구조 복제 — 풀블리드 히어로(오렌지 사선) → 100vh 소개 → 다크 스토리 → 타임라인 → 기능 그리드 → 하드웨어 → 요금 → FAQ 카드 → 문의 폼 → 플로팅 바 → 푸터 */
+:root{
+  --main:#ff6426;          /* 제로백 오렌지 */
+  --sub:#181d62;           /* 제로백 네이비 */
+  --ink:#222;
+  --muted:#666;
+  --soft:#aaa;
+  --line:#e4e4e8;
+  --paper:#fff;
+  --paper2:#f3f3f6;
+  --black:#000;
+  --white:#fff;
+  --font:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  --en:'Montserrat','Noto Sans KR',sans-serif;
+  color-scheme:light;
+}
+*{margin:0;padding:0;box-sizing:border-box;word-break:keep-all;letter-spacing:-0.02em}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font);background:var(--paper);color:var(--ink);overflow-x:hidden}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit;text-decoration:none}
+li{list-style:none}
+button,input,select,textarea{font-family:inherit;outline:none}
+h1,h2,h3,h4,h5{text-wrap:balance}
+.grid{width:100%;display:grid;gap:3rem}
+.grid2{grid-template-columns:repeat(2,1fr)}
+.grid4{grid-template-columns:repeat(4,1fr)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+:focus-visible{outline:2px solid var(--main);outline-offset:3px}
+
+/* ===== reveal ===== */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}.rv.d3{transition-delay:.36s}
+@media (prefers-reduced-motion:reduce){
+  .rv{opacity:1;transform:none;transition:none}
+  *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important}
+  html{scroll-behavior:auto}
+}
+
+/* ===== header ===== */
+header{position:absolute;top:0;left:0;width:100%;height:110px;display:flex;justify-content:center;align-items:center;transition:all .3s;z-index:98}
+header.Fixed{position:fixed;top:env(safe-area-inset-top,0px);height:75px;background:var(--sub);box-shadow:0 2px 6px rgba(0,0,0,.15)}
+nav{width:100%;padding:0 max(50px,env(safe-area-inset-left,0px)) 0 max(50px,env(safe-area-inset-right,0px));display:flex;justify-content:space-between;align-items:center;gap:2rem}
+.logo{width:150px;padding-top:4px;flex:none}
+.logo img{width:100%}
+nav ul{display:flex;gap:3.4rem;align-items:center}
+nav ul li a{color:var(--white);font-size:17px;font-weight:600;transition:color .2s}
+nav ul li a:hover,nav ul li a.actives{color:var(--main)}
+.nav-cta{color:var(--white)!important;background:var(--main);padding:10px 20px;border-radius:8px;font-size:15px!important}
+.nav-cta:hover{color:var(--white)!important;filter:brightness(1.08)}
+#check,.menuBtns,.overlay,nav label{display:none}
+
+/* ===== hero (promotion) ===== */
+.promotion{position:relative;width:100%;min-height:100svh;max-height:1040px;height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden;
+  background:var(--sub) url(assets/img/bg-hero.webp) center/cover no-repeat}
+.promotion::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,18,70,.92) 0%,rgba(24,29,98,.78) 45%,rgba(24,29,98,.55) 100%)}
+.p-shape{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.promotion-wrapper{position:relative;width:1300px;max-width:100%;padding:0 max(20px,env(safe-area-inset-left,0px)) 0 max(20px,env(safe-area-inset-right,0px));z-index:2;display:flex;align-items:center}
+.p-text{width:620px;max-width:100%;color:var(--white)}
+.p-badge{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;padding:7px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);margin-bottom:1.6rem}
+.p-badge i{width:8px;height:8px;border-radius:50%;background:var(--main);animation:blink 1.2s infinite}
+.p-text h1{font-size:82px;line-height:1.08;font-weight:900;letter-spacing:-0.04em}
+.p-text h1 em{font-style:normal;color:var(--main);font-family:var(--en);font-weight:800;font-style:italic}
+.p-text h1 small{display:block;font-size:.78em;font-weight:300;letter-spacing:-0.03em;margin-top:.1em}
+.p-text .p-sub{font-size:26px;font-weight:800;margin-top:2.2rem}
+.p-text .p-desc{font-size:15px;font-weight:400;opacity:.85;margin-top:.6rem}
+.p-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:3rem}
+.pBtn{color:var(--white);font-size:16px;font-weight:600;border:none;width:220px;height:50px;border-radius:8px;background:var(--main);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:filter .2s}
+.pBtn:hover{filter:brightness(1.08)}
+.pBtn.ghost{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35)}
+.p-visual{position:absolute;right:6%;bottom:8%;width:38%;max-width:560px;z-index:2}
+.p-card{border-radius:18px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.45);transform:rotate(-4deg)}
+.p-card img{width:100%;aspect-ratio:1024/830;object-fit:cover}
+.p-chip{position:absolute;left:-8%;bottom:14%;background:var(--white);color:var(--ink);border-radius:14px;padding:14px 18px;box-shadow:0 16px 40px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;animation:upDown 3s ease-in-out infinite}
+.p-chip b{display:block;font-size:14px}
+.p-chip span{font-size:12px;color:var(--muted)}
+.p-chip i{width:38px;height:38px;border-radius:10px;background:var(--main);display:grid;place-items:center;color:var(--white);font-style:normal;font-weight:800;font-size:14px}
+.scrollDown{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);width:22px;height:38px;border:2px solid rgba(255,255,255,.7);border-radius:12px;animation:upDown 1.5s ease-in-out infinite;z-index:2}
+.scrollDown::after{content:'';position:absolute;left:50%;top:7px;width:3px;height:7px;border-radius:2px;background:var(--white);transform:translateX(-50%)}
+@keyframes upDown{0%{transform:translateY(-7px)}50%{transform:translateY(7px)}100%{transform:translateY(-7px)}}
+.scrollDown{animation-name:upDownC}
+@keyframes upDownC{0%{transform:translate(-50%,-7px)}50%{transform:translate(-50%,7px)}100%{transform:translate(-50%,-7px)}}
+@keyframes blink{50%{opacity:0}}
+
+/* ===== article common ===== */
+.article{width:100%;display:flex;flex-direction:column;align-items:center;background:var(--paper);padding:120px 0}
+.article-wrapper{width:1400px;max-width:100%;display:flex;flex-direction:column;align-items:center;padding:0 max(20px,env(safe-area-inset-left,0px)) 0 max(20px,env(safe-area-inset-right,0px))}
+.at-title{margin-bottom:4rem;text-align:center}
+.at-sb{display:inline-block;width:40px;height:40px;transform:rotate(-10deg);margin-bottom:10px;color:var(--main)}
+.at-title h5{color:var(--sub);font-size:60px;font-weight:800;line-height:1.15}
+.at-title p{color:#555;font-size:22px;font-weight:600;margin-top:1rem}
+.grid-bg{background-color:var(--paper);background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:87px 87px;background-position:left top}
+.grid-bg2{background-color:var(--paper2);background-image:linear-gradient(#e2e2e6 1px,transparent 1px),linear-gradient(90deg,#e2e2e6 1px,transparent 1px);background-size:87px 87px}
+
+/* ===== article1 : 한 프로그램으로 ===== */
+.article1{position:relative;min-height:100vh;justify-content:center;overflow:hidden}
+.article1 .article-wrapper{align-items:flex-start}
+.a1-title{width:100%;margin-bottom:5rem;position:relative;z-index:2}
+.a1-title h5{color:var(--ink);font-size:65px;line-height:1.3;font-weight:700}
+.a1-title h5 span{color:var(--white);padding:2px 10px;font-weight:800;border-radius:7px;background:var(--main)}
+.a1-title p{display:flex;flex-wrap:wrap;gap:6px;color:var(--white);font-size:16px;font-weight:500;margin-top:2rem;max-width:620px}
+.a1-title p span{padding:4px 8px;border-radius:4px;background:var(--sub);cursor:default}
+.a1Btn{width:fit-content;color:var(--ink);font-size:19px;font-weight:500;display:flex;align-items:center;gap:10px;margin-top:5rem;transition:gap .2s;position:relative;z-index:2}
+.a1Btn:hover{gap:20px}
+.a1Btn svg{width:34px;height:14px}
+.a1-image{position:absolute;top:50%;right:-4%;transform:translateY(-50%);width:52%;max-width:760px;opacity:.95}
+.a1-image img{width:100%;border-radius:24px;box-shadow:0 30px 70px rgba(24,29,98,.18);aspect-ratio:900/659;object-fit:cover}
+.pin{position:absolute;display:flex;align-items:center;gap:10px}
+.pin b{background:var(--white);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700;color:var(--sub);box-shadow:0 6px 16px rgba(0,0,0,.08);white-space:nowrap}
+.pin-1{top:10%;left:-6%}.pin-2{top:40%;left:-10%}.pin-3{bottom:30%;left:-4%}.pin-4{bottom:8%;left:28%}
+.gps{position:relative;width:20px;height:20px;flex:none}
+.gps::before{content:'';position:absolute;left:-100%;top:-100%;width:300%;height:300%;border-radius:50%;background:var(--main);animation:pulse-ring 1.25s cubic-bezier(.215,.61,.355,1) infinite}
+.gps::after{content:'';position:absolute;inset:0;background:var(--main);border-radius:50%;animation:pulse-dot 1.25s cubic-bezier(.455,.03,.515,.955) -.4s infinite}
+@keyframes pulse-ring{0%{transform:scale(.33)}80%,100%{opacity:0}}
+@keyframes pulse-dot{0%{transform:scale(.8)}50%{transform:scale(1)}100%{transform:scale(.8)}}
+
+/* ===== article2 : 다크 스토리 ===== */
+.article2{position:relative;padding:300px 0;background:linear-gradient(to bottom,#000 0%,var(--sub) 100%);overflow:hidden}
+.a2-flow-wrapper{position:absolute;top:0;left:0;width:100%;padding:20px 0;user-select:none;overflow:hidden;z-index:3;background:var(--main)}
+.a2-flow-wrapper.flow2{top:auto;bottom:0}
+.a2-flow-wrapper.navy{background:var(--sub)}
+.a2-flow{display:flex;align-items:center;gap:3rem;width:max-content;animation:slide 30s linear infinite}
+.a2-flow span{font-family:var(--en);font-style:italic;font-weight:800;font-size:22px;color:var(--white);white-space:nowrap;letter-spacing:.02em}
+.a2-flow span::after{content:'✦';margin-left:3rem;font-style:normal;opacity:.7}
+@keyframes slide{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(-50%,0,0)}}
+.a2-title{color:var(--white);font-size:45px;font-weight:600;line-height:1.5;text-align:center}
+.a2-title span{color:var(--main)}
+.a2-circle-wrapper{display:flex;flex-direction:column;align-items:center;gap:3rem;margin:16rem 0}
+.a2-circle{width:12px;height:12px;border-radius:50%}
+.a2-circle:nth-child(1){background:rgba(255,255,255,.3)}.a2-circle:nth-child(2){background:rgba(255,255,255,.6)}.a2-circle:nth-child(3){background:var(--white)}
+.a2-big{color:var(--white);font-size:77px;font-weight:700;text-align:center}
+.a2-big::after{content:'|';font-weight:300;animation:blink .8s infinite;margin-left:4px}
+.a2-arrow{margin:13rem 0}
+.a2-arrow span{display:block;width:50px;height:50px;border-bottom:4px solid #fff;border-right:4px solid #fff;transform:rotate(45deg);animation:chev 1s infinite;margin:-10px 0}
+.a2-arrow span:nth-child(2){animation-delay:-.2s}.a2-arrow span:nth-child(3){animation-delay:-.4s}
+@keyframes chev{0%{opacity:0;transform:rotate(45deg) translate(-20px,-20px)}50%{opacity:1}100%{opacity:0;transform:rotate(45deg) translate(20px,20px)}}
+.a2-logo{font-family:var(--en);font-style:italic;font-weight:800;color:var(--white);font-size:clamp(48px,10vw,150px);line-height:1;text-align:center;letter-spacing:-0.02em}
+.a2-logo b{color:var(--main)}
+.a2-text{color:var(--white);margin-top:2rem;text-align:center}
+.a2-text p{font-size:46px;font-weight:600;margin-bottom:13rem}
+.a2-text h5{font-size:62px;font-weight:400;line-height:1.5}
+.a2-text h5 span{font-weight:700;padding:4px 14px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.1);display:inline-block;margin:4px 2px}
+
+/* ===== article3 : 0.3초 ===== */
+.article3{position:relative;padding:200px 0;background:#070812;overflow:hidden}
+.article3::before{content:'';position:absolute;inset:0;background:url(assets/img/face.jpg) right center/60% auto no-repeat;opacity:.35;mask:linear-gradient(90deg,transparent 25%,#000 70%);-webkit-mask:linear-gradient(90deg,transparent 25%,#000 70%)}
+.article3::after{content:'';position:absolute;right:-10%;top:50%;width:60vw;height:60vw;max-width:900px;max-height:900px;border-radius:50%;background:radial-gradient(circle,rgba(255,100,38,.35),transparent 60%);transform:translateY(-50%);pointer-events:none}
+.article3 .article-wrapper{align-items:flex-start;position:relative;z-index:2}
+.a3-text h5{color:var(--white);font-size:75px;font-weight:800;line-height:1.1}
+.a3-text h5 span{color:var(--main);font-family:var(--en);font-style:italic}
+.a3-text p{color:var(--white);max-width:560px;font-size:24px;font-weight:300;line-height:1.7;margin-top:3rem}
+.a3-text p b{font-weight:700}
+.a3-text p span{color:var(--main);font-weight:800}
+.a3-stats{display:flex;gap:3rem;margin-top:3rem;flex-wrap:wrap}
+.a3-stats div{color:var(--white)}
+.a3-stats strong{display:block;font-family:var(--en);font-size:40px;font-weight:800;color:var(--main);font-variant-numeric:tabular-nums}
+.a3-stats small{font-size:14px;opacity:.8}
+
+/* ===== article4 : 도입 여정 타임라인 ===== */
+.article4{background:var(--paper);position:relative;overflow:hidden}
+.article4::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 10% 50%,rgba(24,29,98,.07),transparent 50%);pointer-events:none}
+.h-wrapper{width:100%;display:flex;justify-content:space-between;gap:3rem;position:relative;z-index:2}
+.a4-title{position:sticky;top:100px;height:fit-content;margin-top:-10px}
+.a4-title h5{color:var(--sub);font-size:85px;font-weight:800;letter-spacing:-0.04em;line-height:1.15}
+.a4-title h5 span{display:flex;align-items:center;gap:.1em}
+.a4-title h5 span i{display:inline-grid;place-items:center;width:.9em;height:.9em;border-radius:.2em;background:var(--main);color:var(--white);font-style:normal;font-family:var(--en);font-size:.7em}
+.a4-title p{color:var(--muted);font-size:18px;margin-top:1.5rem}
+.h-box-wrapper{width:60%;position:relative;display:flex;flex-direction:column;gap:2rem;z-index:10}
+.h-box-wrapper::after{content:'';position:absolute;top:0;left:132px;width:2px;height:100%;background:#eee;z-index:1}
+.h-box{width:100%;padding-bottom:6rem;display:flex;align-items:flex-start;gap:5rem;border-bottom:1px dashed #ddd}
+.h-box:last-child{border:none;padding-bottom:0}
+.h-box-year{display:flex;align-items:center;gap:3rem}
+.h-box-year h5{width:77px;color:var(--main);font-size:20px;font-weight:800;white-space:nowrap;letter-spacing:-0.04em;font-family:var(--en)}
+.h-box-year span{position:relative;width:16px;height:16px;display:flex;border-radius:50%;background:var(--main);z-index:2}
+.h-box-year span::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#fff}
+.h-box-info{display:flex;flex-direction:column;gap:1rem}
+.h-box-info li{color:var(--muted);font-size:17px;line-height:1.65}
+.h-box-info li:first-child{color:var(--main);font-size:20px;font-weight:700}
+
+/* ===== article5 : 주요기능 ===== */
+.article5{position:relative;padding:0;overflow:hidden}
+.a5-wrapper{width:100%;display:flex;justify-content:space-between;gap:5rem}
+.a5-left{width:60%;padding:200px 0}
+.a5-left .at-title{text-align:left;margin-top:-2rem}
+.a5-left .at-title h5{display:flex;gap:1rem;align-items:center}
+.a5-box-wrapper{gap:1rem}
+.a5-box{padding:34px 36px;display:flex;flex-direction:row-reverse;justify-content:space-between;align-items:center;border-radius:8px;background:var(--white);box-shadow:0 4px 16px rgba(0,0,0,.03);gap:1rem}
+.a5-box-text p{color:var(--soft);font-size:15px;font-weight:600;margin-bottom:8px;font-family:var(--en)}
+.a5-box-text h5{color:var(--ink);font-size:20px;font-weight:700}
+.a5-box-text small{display:block;color:var(--muted);font-size:13px;margin-top:6px;font-weight:400}
+.a5-box-icon{width:66px;height:66px;flex:none;display:grid;place-items:center;border-radius:20px;background:var(--main);color:var(--white)}
+.a5-box-icon svg{width:32px;height:32px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.a5-right{width:40%;position:relative;min-height:600px}
+.a5-flow-wrapper{position:absolute;inset:0;overflow:hidden}
+.a5-flow-wrapper::before,.a5-flow-wrapper::after{content:'';position:absolute;left:0;width:100%;height:120px;z-index:2;pointer-events:none}
+.a5-flow-wrapper::before{top:0;background:linear-gradient(var(--paper2),transparent)}
+.a5-flow-wrapper::after{bottom:0;background:linear-gradient(transparent,var(--paper2))}
+.a5-flow{display:flex;flex-direction:column;gap:2rem;animation:slide2 24s linear infinite}
+.a5-flow img{width:100%;border-radius:10px;aspect-ratio:4/3;object-fit:cover}
+.a5-flow-wrapper:hover .a5-flow{animation-play-state:paused}
+@keyframes slide2{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(0,-50%,0)}}
+
+/* ===== article6 : 하드웨어 ===== */
+.article6{background:#000;background:linear-gradient(90deg,#0000ff 0%,#000 15%,#000 50%,#000 85%,#0000ff 100%)}
+.a6-title h5,.a6-title p{color:var(--white)}
+.a6-title .at-sb{color:var(--white)}
+.a6-box{position:relative;display:block}
+.a6-box-text{position:absolute;bottom:30px;right:30px;text-align:right;z-index:10;color:var(--white)}
+.a6-box-text h5{font-size:32px;font-weight:700}
+.a6-box-text p{font-size:15px;margin-top:.6rem;opacity:.9}
+.a6-box-text em{display:block;font-style:normal;font-family:var(--en);font-size:12px;letter-spacing:.12em;color:var(--main);font-weight:700;margin-bottom:.6rem}
+.a6-box-image{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/10;background:#111}
+.a6-box-image::before{content:'';position:absolute;bottom:0;left:0;width:100%;height:60%;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,transparent 100%);z-index:1}
+.a6-box-image img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.a6-box:hover .a6-box-image img{transform:scale(1.06)}
+.a6-partners{margin-top:5rem;display:flex;flex-wrap:wrap;gap:1rem 3rem;justify-content:center;align-items:center;color:rgba(255,255,255,.75);font-family:var(--en);font-weight:700;font-size:15px;letter-spacing:.08em}
+.a6-partners small{width:100%;text-align:center;font-family:var(--font);font-weight:500;letter-spacing:0;color:rgba(255,255,255,.5);font-size:13px;margin-bottom:.4rem}
+.a6-partners span::before{content:'✦';color:var(--main);margin-right:8px}
+
+/* ===== article7 : 요금 ===== */
+.price-wrapper{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.price{background:var(--white);border-radius:8px;padding:40px;box-shadow:0 4px 20px rgba(0,0,0,.06);position:relative;display:flex;flex-direction:column;gap:.6rem;border:2px solid transparent}
+.price.hot{border-color:var(--main)}
+.price .tag{position:absolute;top:-14px;left:40px;background:var(--main);color:var(--white);font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px}
+.price p{color:var(--soft);font-size:15px;font-weight:600}
+.price h5{font-size:38px;font-weight:800;color:var(--sub);font-variant-numeric:tabular-nums}
+.price h5 small{font-size:16px;font-weight:600;color:var(--muted)}
+.price li{font-size:14px;color:var(--muted);padding-left:18px;position:relative;line-height:1.6}
+.price li::before{content:'✓';position:absolute;left:0;color:var(--main);font-weight:800}
+.hw-list{width:100%;margin-top:3rem;background:var(--white);border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.06);padding:10px 40px}
+.hw-list h6{font-size:16px;font-weight:700;color:var(--sub);padding:22px 0 6px}
+.hw-list li{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:16px 0;border-bottom:1px dashed #ddd;font-size:16px}
+.hw-list li:last-child{border:none}
+.hw-list li small{display:block;color:var(--soft);font-size:13px;margin-top:3px}
+.hw-list li strong{font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
+.price-note{margin-top:1.5rem;color:var(--muted);font-size:14px;text-align:center;line-height:1.7}
+.price-cta{margin-top:2rem}
+
+/* ===== article8 : FAQ 카드 ===== */
+.article8 .article-wrapper{width:100%;padding:0}
+.faq-track{--gut:max(20px,calc((100vw - 1400px)/2 + 20px));display:flex;gap:1.5rem;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding:0 var(--gut);padding:10px var(--gut) 30px;width:100%;scrollbar-width:thin}
+.faq-card{flex:0 0 420px;max-width:85vw;scroll-snap-align:start;position:relative;padding:50px;display:flex;flex-direction:column;gap:2rem;border-radius:8px;background:var(--white);box-shadow:0 4px 20px rgba(0,0,0,.08);overflow:hidden}
+.faq-card::after{content:'Q';position:absolute;bottom:-12%;right:-4%;font-family:var(--en);font-weight:800;font-style:italic;font-size:220px;color:#000;opacity:.04;line-height:1}
+.ss-top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+.ss-profile{display:flex;align-items:center;gap:12px}
+.ss-profile i{width:44px;height:44px;border-radius:50%;background:var(--sub);color:var(--white);display:grid;place-items:center;font-style:normal;font-weight:800;font-family:var(--en);flex:none}
+.ss-profile h5{color:var(--ink);font-size:18px;font-weight:800;line-height:1.4}
+.ss-star{display:flex;gap:1px;color:var(--main);font-size:15px;flex:none;padding-top:12px}
+.ss-bottom p{color:#444;font-size:16px;line-height:1.7;position:relative;z-index:1}
+
+/* ===== article9 : 문의 폼 ===== */
+.form-wrapper{width:100%;max-width:1100px}
+.a9-form{width:100%;display:flex;flex-direction:column;align-items:center}
+.a9-personal{width:100%;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:14px 20px;background:#fff1eb;border-left:4px solid var(--main);margin-bottom:1rem}
+.a9-personal label{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer}
+.a9-personal label input{accent-color:var(--main);width:18px;height:18px}
+.a9-personal button{background:#999;color:var(--white);border:none;font-size:12px;padding:6px 12px;cursor:pointer}
+.input-group{width:100%;padding:20px 0;display:flex;justify-content:space-between;align-items:center;gap:4rem;border-bottom:1px dashed #bbb}
+.input-wrapper{width:50%;display:flex;align-items:center;gap:1rem;min-width:0}
+.input-wrapper.full{width:100%}
+.input-title{width:100px;min-width:100px}
+.input-title h5{color:#444;font-size:15px;font-weight:600}
+.input-title h5 span{color:red}
+.inputbox,.a9-form textarea{color:var(--ink);width:100%;height:47px;padding:0 15px;font-size:15px;border-radius:0;border:1px solid #ddd;background:var(--white)}
+.a9-form textarea{height:140px;padding:15px;resize:vertical}
+.inputbox::placeholder,.a9-form textarea::placeholder{color:#bbb}
+.inputbox:focus,.a9-form textarea:focus{border-color:var(--sub)}
+.radio-wrapper{width:100%;display:flex;gap:5px;flex-wrap:wrap}
+.radio-wrapper input{position:absolute;opacity:0;width:0;height:0}
+.radio-wrapper label{flex:1;color:#333;padding:12px 6px;font-size:14px;border:1px solid #ddd;background:var(--white);text-align:center;cursor:pointer;user-select:none;white-space:nowrap}
+.radio-wrapper label:hover{background:#f8f8f8}
+.radio-wrapper input:checked+label{color:var(--white);font-weight:500;border-color:var(--sub);background:var(--sub)}
+.radio-wrapper input:focus-visible+label{outline:2px solid var(--main)}
+.a9-submit{color:var(--white);width:100%;height:55px;font-size:17px;font-weight:600;border:none;background:var(--sub);cursor:pointer;margin-top:2rem;transition:filter .2s}
+.a9-submit:hover{filter:brightness(1.2)}
+.form-msg{margin-top:1rem;font-size:15px;color:var(--main);font-weight:600;min-height:1.5em;text-align:center}
+
+/* ===== floating ===== */
+.floating{position:sticky;bottom:-1px;width:100%;display:flex;justify-content:center;align-items:center;padding:16px max(20px,env(safe-area-inset-left,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-right,0px));box-shadow:0 -10px 20px rgba(0,0,0,.1);background:var(--main);z-index:97}
+.floating-wrapper{width:1400px;max-width:100%;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.floating-title{display:flex;align-items:center;gap:20px}
+.f-tel{width:52px;height:52px;flex:none;color:var(--white);animation:ring 1.4s infinite ease-in-out}
+.f-tel svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@keyframes ring{0%{transform:translateY(0)}10%{transform:translateY(-3px)}20%{transform:translateY(0)}30%{transform:translateY(-3px)}40%,100%{transform:translateY(0)}}
+.ft-text p{color:var(--white);font-size:18px;font-weight:600}
+.ft-text a{color:var(--white);font-size:40px;font-weight:700;font-family:var(--en);line-height:1.1;letter-spacing:-0.01em}
+.f-form{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.f-form .inputbox,.f-form .selectbox{width:200px;height:46px;padding:0 14px;font-size:15px;background:var(--white);border:none;color:var(--ink)}
+.f-form .selectbox{color:#555}
+.f-form button{height:46px;padding:0 26px;background:var(--sub);color:var(--white);border:none;font-size:15px;font-weight:600;cursor:pointer}
+.f-form label{display:flex;align-items:center;gap:6px;color:var(--white);font-size:13px;white-space:nowrap}
+.f-form label input{accent-color:var(--sub)}
+.topBtn{position:fixed;bottom:calc(110px + env(safe-area-inset-bottom,0px));right:calc(40px + env(safe-area-inset-right,0px));width:50px;height:50px;display:grid;place-items:center;box-shadow:6px 6px 18px rgba(0,0,0,.25);background:var(--sub);color:var(--white);cursor:pointer;z-index:97;border:none;font-size:12px;font-weight:700;font-family:var(--en);opacity:0;pointer-events:none;transition:opacity .3s}
+.topBtn.show{opacity:1;pointer-events:auto}
+.topBtn::before{content:'';width:10px;height:10px;border-top:2px solid #fff;border-left:2px solid #fff;transform:rotate(45deg);margin-bottom:-2px}
+
+/* ===== footer ===== */
+footer{width:100%;display:flex;flex-direction:column;align-items:center;background:var(--black);padding:60px max(20px,env(safe-area-inset-left,0px)) calc(60px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-right,0px))}
+.logo-f{width:200px;margin-bottom:1.6rem}
+.f-info p{color:var(--white);font-size:14px;line-height:1.8;text-align:center;letter-spacing:0;opacity:.9}
+.f-info p span{opacity:.4;margin:0 8px}
+.f-info .copy{margin-top:1rem;opacity:.6;font-size:13px}
+.f-links{display:flex;gap:1.5rem;margin-top:1.4rem}
+.f-links a{color:var(--white);font-size:13px;opacity:.7;border:1px solid rgba(255,255,255,.3);padding:6px 14px;border-radius:999px}
+.f-links a:hover{opacity:1;border-color:var(--main)}
+
+/* ===== responsive ===== */
+@media (max-width:1450px){.a1-image{width:46%}}
+@media (max-width:1350px){nav{padding:0 max(20px,env(safe-area-inset-left,0px)) 0 max(20px,env(safe-area-inset-right,0px))}nav ul{gap:2.2rem}}
+@media (max-width:1250px){
+  .h-wrapper{flex-direction:column}
+  .a4-title{position:static;margin-top:0}
+  .h-box-wrapper{width:100%;margin-top:3rem}
+  .article5{padding:60px 0}
+  .a5-wrapper{flex-direction:column}
+  .a5-left{padding:0;width:100%}
+  .a5-left .at-title{text-align:center;margin-top:4rem}
+  .a5-left .at-title h5{justify-content:center}
+  .a5-right{width:100%}
+  .a5-right{min-height:0}
+  .a5-flow-wrapper{position:relative;inset:auto;height:auto;width:100%}
+  .a5-flow-wrapper::before,.a5-flow-wrapper::after{display:none}
+  .a5-flow{flex-direction:row;width:max-content;animation:slide 18s linear infinite}
+  .a5-flow img{width:360px}
+  .a1-image{position:relative;top:auto;right:auto;transform:none;width:100%;max-width:640px;margin-top:3rem;align-self:center}
+  .pin-1{top:8%;left:2%}.pin-2{top:40%;left:2%}.pin-3{bottom:30%;left:2%}.pin-4{bottom:6%;left:30%}
+  .article1{min-height:0}
+  .price-wrapper{grid-template-columns:1fr}
+}
+@media (max-width:1050px){
+  header{height:75px}
+  nav label{display:flex;z-index:8;cursor:pointer}
+  .menuBtns{display:inline-block}
+  nav ul{position:fixed;top:0;left:-100%;width:80%;height:100vh;padding-left:50px;flex-direction:column;justify-content:center;align-items:flex-start;background:var(--sub);transition:left .25s;z-index:7;gap:2.2rem}
+  nav ul li a{color:var(--white);font-size:26px}
+  .nav-cta{font-size:18px!important}
+  .overlay{position:fixed;inset:0;display:block;background:rgba(0,0,0,.6);transition:all .3s;opacity:0;visibility:hidden;z-index:6}
+  .bar1,.bar2,.bar3{width:24px;height:2px;background:#fff;margin:6px 0;transition:.3s;display:block}
+  #check:checked~ul{left:0}
+  #check:checked~.overlay{opacity:1;visibility:visible}
+  #check:checked~label .bar1{transform:rotate(-45deg) translate(-5px,2px)}
+  #check:checked~label .bar2{opacity:0}
+  #check:checked~label .bar3{transform:rotate(45deg) translate(-9px,-6px)}
+  .p-visual{position:relative;right:auto;bottom:auto;width:70%;max-width:420px;margin:3rem auto 0}
+  .promotion{height:auto;max-height:none;padding:140px 0 100px}
+  .p-shape{top:52%;height:48%}
+  .promotion-wrapper{flex-direction:column;align-items:flex-start}
+  .a6-box-wrapper{gap:1.5rem}
+  .floating-wrapper{justify-content:center;text-align:center}
+  .f-form{display:none}
+}
+@media (max-width:850px){
+  .article{padding:80px 0}
+  .at-title{margin-bottom:3rem}.at-sb{width:30px;height:30px}
+  .at-title h5{font-size:45px}.at-title p{font-size:18px}
+  .p-text h1{font-size:56px}.p-text .p-sub{font-size:20px}
+  .a1-title h5{font-size:44px}
+  .a2-title{font-size:32px}.a2-circle-wrapper{margin:10rem 0}.a2-big{font-size:46px}
+  .a2-text p{font-size:28px;margin-bottom:8rem}.a2-text h5{font-size:38px}
+  .article3{padding:150px 0}.a3-text h5{font-size:52px}.a3-text p{font-size:19px;margin-top:2rem}
+  .a4-title h5{font-size:60px}.h-box{gap:3rem}
+  .a5-box{position:relative;flex-direction:row}
+  .a5-box{padding-right:90px}
+  .a5-box-icon{position:absolute;top:30px;right:26px;width:50px;height:50px;border-radius:12px}
+  .a5-box-icon svg{width:24px;height:24px}
+  .a6-box-text h5{font-size:26px}.a6-box-text p{font-size:14px}
+  .input-group{flex-direction:column;gap:1.2rem;align-items:stretch}
+  .input-wrapper{width:100%}
+}
+@media (max-width:550px){
+  header{height:60px}header.Fixed{height:60px}.logo{width:120px}
+  .bar1,.bar2,.bar3{margin:3px 0}.bar2{opacity:0}
+  #check:checked~label .bar1{transform:rotate(-45deg) translate(-3px,3px)}
+  #check:checked~label .bar3{transform:rotate(45deg) translate(-4px,-4px)}
+  .at-sb{width:24px;height:24px}.at-title h5{font-size:36px}.at-title p{font-size:15px}
+  .p-text h1{font-size:44px}.p-text .p-sub{font-size:18px}.pBtn{width:100%}
+  .a1-title h5{font-size:34px}.a1Btn{font-size:16px;margin-top:3rem}
+  .article2{padding:200px 0 120px}.a2-flow-wrapper{padding:14px 0}.a2-flow span{font-size:16px}
+  .a2-title{font-size:24px}.a2-big{font-size:34px}.a2-arrow{margin:8rem 0}
+  .a2-arrow span{width:30px;height:30px;border-width:3px}
+  .a2-text p{font-size:22px;margin-bottom:6rem}.a2-text h5{font-size:28px}
+  .article3{padding:120px 0}.a3-text h5{font-size:40px}.a3-text p{font-size:16px}
+  .a3-stats strong{font-size:30px}
+  .a4-title h5{font-size:46px}
+  .h-box-wrapper::after{left:86px}.h-box{padding-bottom:3rem;gap:2rem}
+  .h-box-year{gap:1rem}.h-box-year h5{width:65px;font-size:15px}
+  .h-box-year span{width:12px;height:12px}.h-box-year span::after{width:6px;height:6px}
+  .h-box-info li{font-size:15px}.h-box-info li:first-child{font-size:16px}
+  .a5-box-wrapper{grid-template-columns:1fr}.a5-box{padding:26px 90px 26px 26px}.a5-box-text h5{font-size:17px}.a5-flow img{width:260px}
+  .ss-star{display:none}
+  .a6-box-wrapper{grid-template-columns:1fr}
+  .article6{background:linear-gradient(to bottom,#0000ff 0%,#000 10%,#000 90%,#0000ff 100%)}
+  .faq-card{padding:35px 25px;flex-basis:320px}
+  .hw-list{padding:6px 20px}.hw-list li{font-size:14px}
+  .ft-text p{font-size:15px}.ft-text a{font-size:30px}
+  .f-info p span{display:block;height:0;overflow:hidden}
+  footer{padding-top:40px}.logo-f{width:160px}
+  .topBtn{right:calc(16px + env(safe-area-inset-right,0px))}
+}
+</style>
+
+<!-- ===== Header ===== -->
+<header id="header">
+  <nav>
+    <a class="logo" href="#hero" data-nav="hero"><img src="assets/img/logo.png" alt="CheckGym 체크짐 회원관리프로그램"></a>
+    <input type="checkbox" id="check">
+    <label for="check" class="menuBtns" aria-label="메뉴 열기"><span class="bar1"></span><span class="bar2"></span><span class="bar3"></span></label>
+    <ul>
+      <li><a href="#why" data-nav="why">Why CHECKGYM</a></li>
+      <li><a href="#features" data-nav="features">주요기능</a></li>
+      <li><a href="#hardware" data-nav="hardware">하드웨어</a></li>
+      <li><a href="#pricing" data-nav="pricing">요금안내</a></li>
+      <li><a href="#faq" data-nav="faq">자주 묻는 질문</a></li>
+      <li><a href="#contact" data-nav="contact">도입문의</a></li>
+      <li><a class="nav-cta" href="https://onerm.net/mng">체크짐 실행</a></li>
+    </ul>
+    <label for="check" class="overlay"></label>
+  </nav>
+</header>
+
+<!-- ===== Hero ===== -->
+<section class="promotion" id="hero">
+  <svg class="p-shape" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M50 0 H100 V9 L45 100 H24 Z" fill="#ff6426"/>
+    <path d="M100 56 V100 H72 Z" fill="#ff6426"/>
+  </svg>
+  <div class="promotion-wrapper">
+    <div class="p-text">
+      <div class="p-badge rv in"><i></i>CLOUD 기반 피트니스 회원관리 솔루션</div>
+      <h1 class="rv in">출석은 <em>0.3초</em><small>관리는 체크짐 V2</small></h1>
+      <p class="p-sub rv in d1">관장 출신 대표가 직접 만드는 회원관리프로그램</p>
+      <p class="p-desc rv in d1">회원 등록부터 얼굴인식 출입, 키오스크 결제, 자동문 연동까지 한 번에</p>
+      <div class="p-btns rv in d2">
+        <a class="pBtn" href="#contact">프로그램 신청</a>
+        <a class="pBtn ghost" href="https://onerm.net/mng">체크짐 실행</a>
+      </div>
+    </div>
+    <div class="p-visual rv in d2">
+      <div class="p-card"><img src="assets/img/face.jpg" alt="체크짐 AI 안면인식 단말기"></div>
+      <div class="p-chip"><i>OK</i><div><b>ACCESS GRANTED · 0.32s</b><span>김철수 회원님 · 남은 기간 45일</span></div></div>
+    </div>
+  </div>
+  <a class="scrollDown" href="#why" aria-label="아래로 스크롤"></a>
+</section>
+
+<!-- ===== Article1 : 하나의 프로그램 ===== -->
+<section class="article article1 grid-bg" id="why">
+  <div class="article-wrapper">
+    <div class="a1-title rv">
+      <h5>하나의 프로그램으로<br><span>센터 운영 전부 자동화!</span></h5>
+      <p>
+        <span>#전자계약서</span><span>#QR레슨예약</span><span>#원클릭양수도</span><span>#운영리포트</span>
+        <span>#자동문자19종</span><span>#미납만기제어</span><span>#카운터키오스크</span><span>#얼굴인식출입</span><span>#지문인식출입</span>
+      </p>
+    </div>
+    <a class="a1Btn rv d1" href="#features">주요 기능 보러가기
+      <svg viewBox="0 0 34 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M0 7h32M26 1l6 6-6 6"/></svg>
+    </a>
+    <div class="a1-image rv d1">
+      <img src="assets/img/kiosk.jpg" alt="체크짐 카운터용 키오스크">
+      <div class="pin pin-1"><span class="gps"></span><b>얼굴인식 게이트 연동</b></div>
+      <div class="pin pin-2"><span class="gps"></span><b>24시간 무인 결제</b></div>
+      <div class="pin pin-3"><span class="gps"></span><b>문화비 소득공제 분리결제</b></div>
+      <div class="pin pin-4"><span class="gps"></span><b>입·퇴실 안심 문자</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Article2 : 다크 스토리 ===== -->
+<section class="article article2">
+  <div class="a2-flow-wrapper"><div class="a2-flow" data-marquee></div></div>
+  <div class="article-wrapper">
+    <p class="a2-title rv">기능 추가 비용 <span>0원</span>, 업데이트 <span>무료</span>!<br>기본 이용료 하나로 모든 기능을 쓰는 비결이 뭘까요?</p>
+    <div class="a2-circle-wrapper rv"><span class="a2-circle"></span><span class="a2-circle"></span><span class="a2-circle"></span></div>
+    <h5 class="a2-big rv">단순한 가격 경쟁일까요?</h5>
+    <div class="a2-arrow rv"><span></span><span></span><span></span></div>
+    <div class="a2-logo rv">CHECK<b>GYM</b> V2</div>
+    <div class="a2-text">
+      <p class="rv">관장 출신 대표가 현장에서 직접 만들기 때문입니다.</p>
+      <h5 class="rv"><span>회원관리</span> + <span>출입통제</span> + <span>무인결제</span> 를 한 번에<br>단 하나의 회원관리프로그램!</h5>
+    </div>
+  </div>
+  <div class="a2-flow-wrapper flow2"><div class="a2-flow" data-marquee></div></div>
+</section>
+
+<!-- ===== Article3 : 0.3초 ===== -->
+<section class="article article3">
+  <div class="article-wrapper">
+    <div class="a3-text">
+      <h5 class="rv">출석은 <span>0.3초</span>에서 시작한다</h5>
+      <p class="rv d1"><b>'0.3초'</b>는 체크짐 안면인식 단말기가 회원을 알아보는 시간입니다. <b>IR 적외선 3D 라이브 감지</b>로 사진·동영상 대리 출석을 막고, 오인식률 <b>0.0001% 미만</b>의 금융권 등급 엔진이 입실과 동시에 출석을 완료합니다. 회원에게는 <b>기다림 없는 입장</b>을, 관리자에게는 <span>무인 운영</span>을 드립니다.</p>
+      <div class="a3-stats rv d2">
+        <div><strong>0.3s</strong><small>얼굴 인식 시간</small></div>
+        <div><strong>0.0001%</strong><small>오인식률 (금융권 등급)</small></div>
+        <div><strong>IR 3D</strong><small>라이브 감지로 대리출석 차단</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Article4 : 도입 여정 ===== -->
+<section class="article article4">
+  <div class="article-wrapper">
+    <div class="h-wrapper">
+      <div class="a4-title rv">
+        <h5>도입 5단계<br><span><i>C</i>의 여정</span></h5>
+        <p>상담부터 운영까지, 전담 설치 컨설턴트가 끝까지 함께합니다.</p>
+      </div>
+      <div class="h-box-wrapper">
+        <div class="h-box rv">
+          <div class="h-box-year"><h5>STEP 01</h5><span></span></div>
+          <ul class="h-box-info"><li>상담 신청</li><li>간단한 정보만 남기시면 체크짐 V2 전담 설치 컨설턴트가 신속히 도입 안내를 진행합니다. 전화·카카오톡·홈페이지 어디로든 가능합니다.</li></ul>
+        </div>
+        <div class="h-box rv">
+          <div class="h-box-year"><h5>STEP 02</h5><span></span></div>
+          <ul class="h-box-info"><li>실시간 견적 · 제안서</li><li>월납 / 1년 / 2년 요금과 키오스크·얼굴인식·지문인식 장비를 조합해 사은 개월 수까지 반영된 종합 혜택 제안서를 바로 받아보세요.</li></ul>
+        </div>
+        <div class="h-box rv">
+          <div class="h-box-year"><h5>STEP 03</h5><span></span></div>
+          <ul class="h-box-info"><li>기존 데이터 무료 이전</li><li>타 프로그램을 쓰고 계셨다면 엑셀로 추출되는 모든 회원 정보를 무료로 옮겨 드립니다. 센터 운영 공백 없이 전환됩니다.</li></ul>
+        </div>
+        <div class="h-box rv">
+          <div class="h-box-year"><h5>STEP 04</h5><span></span></div>
+          <ul class="h-box-info"><li>설치 및 연동</li><li>키오스크, 출석 터치탭, 얼굴·지문인식 단말기를 설치하고 출입 게이트와 체크짐 회원 DB를 100% 연동합니다. 관리자에서 원격 문열기와 출입 로그까지 바로 확인됩니다.</li></ul>
+        </div>
+        <div class="h-box rv">
+          <div class="h-box-year"><h5>STEP 05</h5><span></span></div>
+          <ul class="h-box-info"><li>운영 · 무료 수시 업데이트</li><li>기능이 추가되어도 이용료는 그대로. 센터 고견을 접수해 반영하고, 전자계약서는 평생 무제한 무료로 제공됩니다.</li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Article5 : 주요기능 ===== -->
+<section class="article article5 grid-bg2" id="features">
+  <div class="article-wrapper">
+    <div class="a5-wrapper">
+      <div class="a5-left">
+        <div class="at-title rv">
+          <h5>주요기능 <svg class="at-sb" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></h5>
+          <p>피트니스 센터 운영의 디지털 전환을 이끄는 체크짐만의 스마트 기능</p>
+        </div>
+        <div class="grid grid2 a5-box-wrapper">
+          <div class="a5-box rv"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></div><div class="a5-box-text"><p>01</p><h5>전자계약서</h5><small>서명·촬영과 동시에 회원·결제 실시간 연동, PDF 자동 생성</small></div></div>
+          <div class="a5-box rv d1"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3M21 14v7h-7"/></svg></div><div class="a5-box-text"><p>02</p><h5>QR 레슨예약</h5><small>앱 설치 없이 모바일 웹 링크로 예약, 노쇼 터치 차감</small></div></div>
+          <div class="a5-box rv"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></div><div class="a5-box-text"><p>03</p><h5>원클릭 양수도</h5><small>잔여 기간·횟수 자동 산출, 수수료 결제와 면책 서명까지</small></div></div>
+          <div class="a5-box rv d1"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-5 4 3 5-7"/></svg></div><div class="a5-box-text"><p>04</p><h5>운영리포트</h5><small>일일·월간·연간 매출, 방문 히트맵, 재등록율 통합 뷰</small></div></div>
+          <div class="a5-box rv"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div><div class="a5-box-text"><p>05</p><h5>실시간 알림 시스템</h5><small>만료 7일·3일 전 재등록 안내, 결제 영수증 자동 통보</small></div></div>
+          <div class="a5-box rv d1"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="a5-box-text"><p>06</p><h5>미납·만기 자동제어</h5><small>미납·만기 회원 게이트 자동 잠금, 결제 안내 음성 송출</small></div></div>
+          <div class="a5-box rv"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="a5-box-text"><p>07</p><h5>자동문자 19종</h5><small>입·퇴실 안심 문자, 결제·예약 알림, 야간 발송 제한</small></div></div>
+          <div class="a5-box rv d1"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg></div><div class="a5-box-text"><p>08</p><h5>문화비 소득공제 분리결제</h5><small>국내 유일, PG 결제 단계에서 소득공제 항목 자동 분산</small></div></div>
+        </div>
+      </div>
+      <div class="a5-right">
+        <div class="a5-flow-wrapper">
+          <div class="a5-flow">
+            <img src="assets/img/edoc.jpg" alt="전자계약서 화면">
+            <img src="assets/img/lesson.jpg" alt="레슨예약 화면">
+            <img src="assets/img/report.jpg" alt="운영리포트 화면">
+            <img src="assets/img/touch.jpg" alt="출석 터치시스템">
+            <img src="assets/img/edoc.jpg" alt="">
+            <img src="assets/img/lesson.jpg" alt="">
+            <img src="assets/img/report.jpg" alt="">
+            <img src="assets/img/touch.jpg" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Article6 : 하드웨어 ===== -->
+<section class="article article6" id="hardware">
+  <div class="article-wrapper">
+    <div class="at-title a6-title rv">
+      <svg class="at-sb" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>
+      <h5>하드웨어 시스템</h5>
+      <p>센터 운영의 핵심 솔루션을 이루는 주요 단말기 (클릭 시 상세 안내)</p>
+    </div>
+    <div class="grid grid2 a6-box-wrapper">
+      <a class="a6-box rv" href="#contact"><div class="a6-box-image"><img src="assets/img/kiosk.jpg" alt="카운터용 키오스크"></div><div class="a6-box-text"><em>CORE SYSTEM</em><h5>카운터용 Kiosk</h5><p>15.6인치 · 신규등록·재등록·일일권 24시간 무인 결제</p></div></a>
+      <a class="a6-box rv d1" href="#contact"><div class="a6-box-image"><img src="assets/img/touch.jpg" alt="출석 터치시스템"></div><div class="a6-box-text"><em>CORE SYSTEM</em><h5>출석 터치시스템</h5><p>출석 체크와 레슨 차감 동시 처리 · 입·퇴실 SMS 자동 전송</p></div></a>
+      <a class="a6-box rv" href="#contact"><div class="a6-box-image"><img src="assets/img/face.jpg" alt="얼굴인식 출입"></div><div class="a6-box-text"><em>SUPREMA</em><h5>얼굴인식 출입</h5><p>0.3초 AI 안면인식 · 회원 DB 실시간 연동 · 원격 문열기</p></div></a>
+      <a class="a6-box rv d1" href="#contact"><div class="a6-box-image"><img src="assets/img/finger.jpg" alt="지문인식 출입"></div><div class="a6-box-text"><em>SUPREMA</em><h5>지문인식 출입</h5><p>지문 일체형 출입통제 · 입실과 동시에 출석 완료</p></div></a>
+    </div>
+    <div class="a6-partners rv">
+      <small>CheckGym V2 Official Technology Partners</small>
+      <span>SUPREMA</span><span>LG ELECTRONICS</span><span>KIS정보통신</span><span>MIZE</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Article7 : 요금안내 ===== -->
+<section class="article article7 grid-bg" id="pricing">
+  <div class="article-wrapper">
+    <div class="at-title rv">
+      <svg class="at-sb" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>
+      <h5>요금안내</h5>
+      <p>기능 추가 비용 없는 단 하나의 요금. 모든 기능을 기본 이용료로.</p>
+    </div>
+    <div class="price-wrapper">
+      <div class="price rv"><p>매월 정기결제 (월납)</p><h5>30,000<small>원 / 월</small></h5><ul><li>모든 기능 포함</li><li>무료 수시 업데이트</li><li>언제든 해지 가능</li></ul></div>
+      <div class="price hot rv d1"><span class="tag">+2개월 증정</span><p>1년 일시불 (선납)</p><h5>240,000<small>원 / 년</small></h5><ul><li>월 환산 약 17,143원</li><li>14개월 이용</li><li>전자계약서 무제한 무료</li></ul></div>
+      <div class="price rv d2"><span class="tag">+2개월 증정</span><p>2년 일시불 (선납)</p><h5>380,000<small>원 / 2년</small></h5><ul><li>26개월 이용</li><li>가장 낮은 월 단가</li><li>데이터 이전 무료</li></ul></div>
+    </div>
+    <div class="hw-list rv">
+      <h6>현장 구축형 하드웨어 (선택 · 고객 소유 일시불 구매)</h6>
+      <ul>
+        <li><div>터치 출석 입력용 탭 <small>15.6인치</small></div><strong>500,000원</strong></li>
+        <li><div>카운터용 결제 키오스크 <small>15.6인치 · 테이블 탑 타입</small></div><strong>540,000원</strong></li>
+        <li><div>결제 키오스크 <small>21.5인치 · 테이블 탑 또는 스탠드</small></div><strong>780,000원</strong></li>
+        <li><div>지문인식 출입통제 <small>지문 일체형</small></div><strong>1,200,000원</strong></li>
+        <li><div>얼굴인식 출입통제 <small>프리미엄 럭셔리</small></div><strong>2,500,000원</strong></li>
+      </ul>
+    </div>
+    <p class="price-note rv">모든 금액은 VAT 별도입니다. 얼굴·지문인식 장비는 설치비 및 지방 출장비가, 스탠드는 별도 금액이 추가될 수 있습니다.<br>하드웨어는 렌탈이 아닌 구매 장비이므로 이용 계약이 끝나도 계속 보유하십니다.</p>
+    <a class="pBtn price-cta rv" href="#contact">실시간 견적 받기</a>
+  </div>
+</section>
+
+<!-- ===== Article8 : FAQ ===== -->
+<section class="article article8 grid-bg2" id="faq">
+  <div class="article-wrapper">
+    <div class="at-title rv">
+      <svg class="at-sb" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>
+      <h5>자주 묻는 질문</h5>
+      <p>도입 전 점주님들께서 가장 많이 문의하시는 내용</p>
+    </div>
+    <div class="faq-track">
+      <div class="faq-card rv"><div class="ss-top"><div class="ss-profile"><i>Q</i><h5>기능 추가 시 이용료가 올라가나요?</h5></div><div class="ss-star">★★★★★</div></div><div class="ss-bottom"><p>체크짐은 기능 추가 시 이용료 추가가 없는 유일한 회원관리프로그램입니다. 기본 이용료에 모든 기능이 포함됩니다. 단, 시스템 설치비와 하드웨어 구매는 별도 비용이 발생합니다.</p></div></div>
+      <div class="faq-card rv d1"><div class="ss-top"><div class="ss-profile"><i>Q</i><h5>키오스크로 문화비 소득공제가 되나요?</h5></div><div class="ss-star">★★★★★</div></div><div class="ss-bottom"><p>카운터용 키오스크 한 대에서 별도 카드단말기 없이 문화비 소득공제 자동 분리결제가 가능합니다. 현재 카드단말기 사용 센터도 필요 서류가 간단합니다.</p></div></div>
+      <div class="faq-card rv d2"><div class="ss-top"><div class="ss-profile"><i>Q</i><h5>계약이 끝나면 기기를 반납하나요?</h5></div><div class="ss-star">★★★★★</div></div><div class="ss-bottom"><p>아닙니다. 하드웨어는 렌탈이 아닌 고객님 소유의 일시불 구매 장비입니다. 프로그램 이용 계약이 끝나도 장비는 계속 보유하십니다.</p></div></div>
+      <div class="faq-card rv d3"><div class="ss-top"><div class="ss-profile"><i>Q</i><h5>안드로이드탭이 있으면 이용료만 내면 되나요?</h5></div><div class="ss-star">★★★★★</div></div><div class="ss-bottom"><p>네. 체크짐은 모든 안드로이드탭에서 출석체크가 가능합니다. 다만 15.6인치 와이드 터치시스템은 회원이 남은 기간을 스스로 확인하기 쉬워 재등록에 유리하고, 얇은 베젤로 인테리어 효과도 뛰어납니다.</p></div></div>
+      <div class="faq-card rv d3"><div class="ss-top"><div class="ss-profile"><i>Q</i><h5>기존 프로그램 데이터는 옮겨지나요?</h5></div><div class="ss-star">★★★★★</div></div><div class="ss-bottom"><p>네. 타 프로그램에서 엑셀로 추출되는 모든 정보는 무료로 옮겨 드립니다.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Article9 : 도입문의 ===== -->
+<section class="article article9" id="contact">
+  <div class="article-wrapper">
+    <div class="at-title rv">
+      <svg class="at-sb" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>
+      <h5>도입문의</h5>
+      <p>간단한 정보만 남겨 주시면 전담 설치 컨설턴트가 신속히 안내해 드립니다.</p>
+    </div>
+    <div class="form-wrapper rv">
+      <form class="a9-form" id="contactForm" novalidate>
+        <div class="a9-personal">
+          <label><input type="checkbox" id="agree" required>개인정보 수집 및 이용에 동의합니다.</label>
+          <button type="button" id="privacyBtn">내용보기</button>
+        </div>
+        <div class="input-group">
+          <div class="input-wrapper"><div class="input-title"><h5>담당자 성함<span> *</span></h5></div><input class="inputbox" id="f-name" type="text" placeholder="홍길동" required></div>
+          <div class="input-wrapper"><div class="input-title"><h5>연락처<span> *</span></h5></div><input class="inputbox" id="f-phone" type="tel" placeholder="010-1234-5678" required></div>
+        </div>
+        <div class="input-group">
+          <div class="input-wrapper"><div class="input-title"><h5>클럽명<span> *</span></h5></div><input class="inputbox" id="f-club" type="text" placeholder="OO피트니스 OO점" required></div>
+          <div class="input-wrapper"><div class="input-title"><h5>관심 항목<span> *</span></h5></div>
+            <div class="radio-wrapper">
+              <input type="radio" name="item" id="item1" value="프로그램" checked><label for="item1">프로그램</label>
+              <input type="radio" name="item" id="item2" value="키오스크"><label for="item2">키오스크</label>
+              <input type="radio" name="item" id="item3" value="얼굴인식"><label for="item3">얼굴인식</label>
+              <input type="radio" name="item" id="item4" value="지문인식"><label for="item4">지문인식</label>
+            </div>
+          </div>
+        </div>
+        <div class="input-group">
+          <div class="input-wrapper full"><div class="input-title"><h5>문의사항</h5></div><textarea id="f-msg" placeholder="현재 사용 중인 프로그램, 회원 수, 희망 설치 시기 등을 남겨주시면 더 자세한 상담이 가능합니다."></textarea></div>
+        </div>
+        <button class="a9-submit" type="submit">상담 신청하기</button>
+        <p class="form-msg" id="formMsg" aria-live="polite"></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Floating ===== -->
+<div class="floating">
+  <div class="floating-wrapper">
+    <div class="floating-title">
+      <div class="f-tel"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.9 2z"/></svg></div>
+      <div class="ft-text"><p>체크짐 V2 도입 무료상담</p><a href="tel:010-9209-0448">010-9209-0448</a></div>
+    </div>
+    <form class="f-form" id="quickForm">
+      <label for="q-name" class="sr">성함</label><input class="inputbox" id="q-name" type="text" placeholder="성함" required>
+      <label for="q-phone" class="sr">연락처</label><input class="inputbox" id="q-phone" type="tel" placeholder="연락처" required>
+      <label for="q-item" class="sr">관심 항목</label>
+      <select class="selectbox" id="q-item"><option value="">관심 항목</option><option>프로그램만</option><option>카운터 키오스크</option><option>얼굴인식 출입</option><option>지문인식 출입</option><option>전체 구축</option></select>
+      <button type="submit">상담신청하기</button>
+      <label><input type="checkbox" id="q-agree" required>개인정보 수집·이용 동의</label>
+    </form>
+  </div>
+</div>
+<button class="topBtn" id="topBtn" aria-label="맨 위로">TOP</button>
+
+<!-- ===== Footer ===== -->
+<footer>
+  <img class="logo-f" src="assets/img/logo.png" alt="CheckGym">
+  <div class="f-info">
+    <p>회사명 원알엠스포츠 <span>│</span> 대표 박경준 <span>│</span> 고객센터 010-9209-0448 <span>│</span> 팩스 0504-433-9844 <span>│</span> onermsports@naver.com</p>
+    <p>인천시 연수구 컨벤시아대로 165 포스코타워 26층</p>
+    <p class="copy">ⓒ 2026 원알엠스포츠. All rights reserved. Powered by CheckGym Core.</p>
+  </div>
+  <div class="f-links"><a href="https://onerm.net/mng">체크짐 실행</a><a href="#contact">도입문의</a></div>
+</footer>
+
+<script>
+(function(){
+  // 마퀴 텍스트 채우기
+  document.querySelectorAll('[data-marquee]').forEach(function(el){
+    var h=''; for(var i=0;i<16;i++){ h+='<span>CHECKGYM V2</span>'; } el.innerHTML=h;
+  });
+  // 헤더 고정 + TOP 버튼
+  var header=document.getElementById('header'), topBtn=document.getElementById('topBtn');
+  function onScroll(){
+    var y=window.scrollY||document.documentElement.scrollTop;
+    header.classList.toggle('Fixed', y>120);
+    topBtn.classList.toggle('show', y>600);
+  }
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+  topBtn.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+  // 모바일 메뉴: 링크 클릭 시 닫기
+  var chk=document.getElementById('check');
+  document.querySelectorAll('nav ul a').forEach(function(a){ a.addEventListener('click', function(){ chk.checked=false; }); });
+  // 스크롤 스파이
+  var links=document.querySelectorAll('nav a[data-nav]');
+  var secs=[]; links.forEach(function(a){ var s=document.getElementById(a.getAttribute('data-nav')); if(s) secs.push([s,a]); });
+  if('IntersectionObserver' in window){
+    var spy=new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(a){a.classList.remove('actives');}); secs.forEach(function(p){ if(p[0]===e.target) p[1].classList.add('actives'); }); } });
+    },{rootMargin:'-40% 0px -55% 0px'});
+    secs.forEach(function(p){ spy.observe(p[0]); });
+    // 리빌
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },{threshold:.12});
+    document.querySelectorAll('.rv:not(.in)').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.rv').forEach(function(el){ el.classList.add('in'); });
+  }
+  // 폼 (초안: 전송 없이 안내만)
+  function phoneOk(v){ return /^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(v.trim()); }
+  var form=document.getElementById('contactForm'), msg=document.getElementById('formMsg');
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    if(!document.getElementById('agree').checked){ msg.textContent='개인정보 수집·이용에 동의해 주세요.'; return; }
+    if(!document.getElementById('f-name').value.trim()){ msg.textContent='담당자 성함을 입력해 주세요.'; return; }
+    if(!phoneOk(document.getElementById('f-phone').value)){ msg.textContent='연락처를 010-0000-0000 형식으로 입력해 주세요.'; return; }
+    if(!document.getElementById('f-club').value.trim()){ msg.textContent='클럽명을 입력해 주세요.'; return; }
+    msg.textContent='초안 화면입니다. 실제 사이트에서는 이 자리에서 상담 신청이 접수됩니다.';
+  });
+  document.getElementById('quickForm').addEventListener('submit', function(ev){
+    ev.preventDefault();
+    if(!document.getElementById('q-agree').checked){ document.getElementById('q-agree').focus(); return; }
+    document.getElementById('contact').scrollIntoView({behavior:'smooth'});
+    msg.textContent='아래 양식에서 상담을 신청해 주세요.';
+  });
+  document.getElementById('privacyBtn').addEventListener('click', function(){
+    msg.textContent='수집 항목: 성함·연락처·클럽명 / 목적: 도입 상담 / 보유 기간: 상담 완료 후 즉시 파기';
+    msg.scrollIntoView({behavior:'smooth', block:'center'});
+  });
+})();
+</script>
+
+</body>
+</html>
