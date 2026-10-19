@@ -5,7 +5,7 @@
 - `index.html` — 원본 HTML (상대 경로 그대로)
 - `assets/landing/landing.css`, `landing.js`, `calc.js` — 원본 CSS/JS
 - `assets/images/` — 제품 이미지·배경(webp)
-- `assets/images/logos/` — 가맹점 로고 311개 (원본은 cg2.co.kr / cg3.co.kr 외부 이미지)
+- `assets/images/logos/` — 가맹점 로고 304개 (원본에서도 404인 7개는 제외) (원본은 cg2.co.kr / cg3.co.kr 외부 이미지)
 - `assets/landing/rollingimg.json` — 원본 `procHome.php?actmode=rollingimg` 응답을 로컬 경로로 바꾼 것
 - `draft-zeroback/` — 이전에 만든 zeroback.co.kr 스타일 리뉴얼 초안
 
