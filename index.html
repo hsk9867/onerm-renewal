@@ -2,780 +2,1300 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="회원 등록부터 얼굴인식 출입, 키오스크 결제, 자동문 연동까지. 피트니스 회원관리프로그램 체크짐 V2.">
-<title>체크짐 V2 리뉴얼 초안</title>
-<meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;800;900&family=Montserrat:ital,wght@0,700;0,800;1,800&display=swap">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="naver-site-verification" content="87ef30502002c8d11660dc80ea09de1b51d8eeb9"/>
+<meta name="description" content="회원 등록부터 일일 입장, 얼굴 인식 출석과 자동문 연동까지. 피트니스 회원관리프로그램 체크짐 V2.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="체크짐 회원관리 프로그램">
+<meta property="og:description" content="No.1 휘트니스 회원관리 프로그램">
+<!-- 레거시 원본은 visual_03.png 를 가리켰으나 신구 어디에도 존재하지 않아(404)
+     공유 프리뷰가 깨졌다. 이미 로컬에 있는 제품 이미지로 교체한다.
+     1024x830 / 282KB — OG 권장비(1.91:1)에 가장 근접하고 용량도 적당하다. -->
+<meta property="og:image" content="https://onerm.net/home/assets/images/chkgym_face_device.png">
+<meta property="og:image:width" content="1024">
+<meta property="og:image:height" content="830">
+<meta property="og:url" content="https://onerm.net/">
+<title>원알엠스포츠 &amp; 체크짐 토탈 회원관리프로그램</title>
+<link rel="stylesheet" href="assets/landing/landing.css?v=1791812460">
 </head>
-<body>
-<style>
-/* Layout: zeroback.co.kr 구조 복제 — 풀블리드 히어로(오렌지 사선) → 100vh 소개 → 다크 스토리 → 타임라인 → 기능 그리드 → 하드웨어 → 요금 → FAQ 카드 → 문의 폼 → 플로팅 바 → 푸터 */
-:root{
-  --main:#ff6426;          /* 제로백 오렌지 */
-  --sub:#181d62;           /* 제로백 네이비 */
-  --ink:#222;
-  --muted:#666;
-  --soft:#aaa;
-  --line:#e4e4e8;
-  --paper:#fff;
-  --paper2:#f3f3f6;
-  --black:#000;
-  --white:#fff;
-  --font:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
-  --en:'Montserrat','Noto Sans KR',sans-serif;
-  color-scheme:light;
-}
-*{margin:0;padding:0;box-sizing:border-box;word-break:keep-all;letter-spacing:-0.02em}
-html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-body{font-family:var(--font);background:var(--paper);color:var(--ink);overflow-x:hidden}
-img{max-width:100%;height:auto;display:block}
-a{color:inherit;text-decoration:none}
-li{list-style:none}
-button,input,select,textarea{font-family:inherit;outline:none}
-h1,h2,h3,h4,h5{text-wrap:balance}
-.grid{width:100%;display:grid;gap:3rem}
-.grid2{grid-template-columns:repeat(2,1fr)}
-.grid4{grid-template-columns:repeat(4,1fr)}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-:focus-visible{outline:2px solid var(--main);outline-offset:3px}
+<body class="landing-body">
 
-/* ===== reveal ===== */
-.rv{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
-.rv.in{opacity:1;transform:none}
-.rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}.rv.d3{transition-delay:.36s}
-@media (prefers-reduced-motion:reduce){
-  .rv{opacity:1;transform:none;transition:none}
-  *,*::before,*::after{animation-duration:.001s!important;animation-iteration-count:1!important}
-  html{scroll-behavior:auto}
-}
+<!-- 1. Header (GNB) -->
+<header class="landing-header" data-landing-header>
+  <div class="landing-logo" data-navlink="hero" style="cursor: pointer;">
+    <img src="assets/images/checkgym_logo_small.png" alt="CheckGym V2" class="landing-logo-img">
+  </div>
 
-/* ===== header ===== */
-header{position:absolute;top:0;left:0;width:100%;height:110px;display:flex;justify-content:center;align-items:center;transition:all .3s;z-index:98}
-header.Fixed{position:fixed;top:env(safe-area-inset-top,0px);height:75px;background:var(--sub);box-shadow:0 2px 6px rgba(0,0,0,.15)}
-nav{width:100%;padding:0 max(50px,env(safe-area-inset-left,0px)) 0 max(50px,env(safe-area-inset-right,0px));display:flex;justify-content:space-between;align-items:center;gap:2rem}
-.logo{width:150px;padding-top:4px;flex:none}
-.logo img{width:100%}
-nav ul{display:flex;gap:3.4rem;align-items:center}
-nav ul li a{color:var(--white);font-size:17px;font-weight:600;transition:color .2s}
-nav ul li a:hover,nav ul li a.actives{color:var(--main)}
-.nav-cta{color:var(--white)!important;background:var(--main);padding:10px 20px;border-radius:8px;font-size:15px!important}
-.nav-cta:hover{color:var(--white)!important;filter:brightness(1.08)}
-#check,.menuBtns,.overlay,nav label{display:none}
-
-/* ===== hero (promotion) ===== */
-.promotion{position:relative;width:100%;min-height:100svh;max-height:1040px;height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden;
-  background:var(--sub) url(assets/img/bg-hero.webp) center/cover no-repeat}
-.promotion::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(14,18,70,.92) 0%,rgba(24,29,98,.78) 45%,rgba(24,29,98,.55) 100%)}
-.p-shape{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.promotion-wrapper{position:relative;width:1300px;max-width:100%;padding:0 max(20px,env(safe-area-inset-left,0px)) 0 max(20px,env(safe-area-inset-right,0px));z-index:2;display:flex;align-items:center}
-.p-text{width:620px;max-width:100%;color:var(--white)}
-.p-badge{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;padding:7px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);margin-bottom:1.6rem}
-.p-badge i{width:8px;height:8px;border-radius:50%;background:var(--main);animation:blink 1.2s infinite}
-.p-text h1{font-size:82px;line-height:1.08;font-weight:900;letter-spacing:-0.04em}
-.p-text h1 em{font-style:normal;color:var(--main);font-family:var(--en);font-weight:800;font-style:italic}
-.p-text h1 small{display:block;font-size:.78em;font-weight:300;letter-spacing:-0.03em;margin-top:.1em}
-.p-text .p-sub{font-size:26px;font-weight:800;margin-top:2.2rem}
-.p-text .p-desc{font-size:15px;font-weight:400;opacity:.85;margin-top:.6rem}
-.p-btns{display:flex;gap:12px;flex-wrap:wrap;margin-top:3rem}
-.pBtn{color:var(--white);font-size:16px;font-weight:600;border:none;width:220px;height:50px;border-radius:8px;background:var(--main);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;transition:filter .2s}
-.pBtn:hover{filter:brightness(1.08)}
-.pBtn.ghost{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.35)}
-.p-visual{position:absolute;right:6%;bottom:8%;width:38%;max-width:560px;z-index:2}
-.p-card{border-radius:18px;overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.45);transform:rotate(-4deg)}
-.p-card img{width:100%;aspect-ratio:1024/830;object-fit:cover}
-.p-chip{position:absolute;left:-8%;bottom:14%;background:var(--white);color:var(--ink);border-radius:14px;padding:14px 18px;box-shadow:0 16px 40px rgba(0,0,0,.35);display:flex;align-items:center;gap:12px;animation:upDown 3s ease-in-out infinite}
-.p-chip b{display:block;font-size:14px}
-.p-chip span{font-size:12px;color:var(--muted)}
-.p-chip i{width:38px;height:38px;border-radius:10px;background:var(--main);display:grid;place-items:center;color:var(--white);font-style:normal;font-weight:800;font-size:14px}
-.scrollDown{position:absolute;bottom:40px;left:50%;transform:translateX(-50%);width:22px;height:38px;border:2px solid rgba(255,255,255,.7);border-radius:12px;animation:upDown 1.5s ease-in-out infinite;z-index:2}
-.scrollDown::after{content:'';position:absolute;left:50%;top:7px;width:3px;height:7px;border-radius:2px;background:var(--white);transform:translateX(-50%)}
-@keyframes upDown{0%{transform:translateY(-7px)}50%{transform:translateY(7px)}100%{transform:translateY(-7px)}}
-.scrollDown{animation-name:upDownC}
-@keyframes upDownC{0%{transform:translate(-50%,-7px)}50%{transform:translate(-50%,7px)}100%{transform:translate(-50%,-7px)}}
-@keyframes blink{50%{opacity:0}}
-
-/* ===== article common ===== */
-.article{width:100%;display:flex;flex-direction:column;align-items:center;background:var(--paper);padding:120px 0}
-.article-wrapper{width:1400px;max-width:100%;display:flex;flex-direction:column;align-items:center;padding:0 max(20px,env(safe-area-inset-left,0px)) 0 max(20px,env(safe-area-inset-right,0px))}
-.at-title{margin-bottom:4rem;text-align:center}
-.at-sb{display:inline-block;width:40px;height:40px;transform:rotate(-10deg);margin-bottom:10px;color:var(--main)}
-.at-title h5{color:var(--sub);font-size:60px;font-weight:800;line-height:1.15}
-.at-title p{color:#555;font-size:22px;font-weight:600;margin-top:1rem}
-.grid-bg{background-color:var(--paper);background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:87px 87px;background-position:left top}
-.grid-bg2{background-color:var(--paper2);background-image:linear-gradient(#e2e2e6 1px,transparent 1px),linear-gradient(90deg,#e2e2e6 1px,transparent 1px);background-size:87px 87px}
-
-/* ===== article1 : 한 프로그램으로 ===== */
-.article1{position:relative;min-height:100vh;justify-content:center;overflow:hidden}
-.article1 .article-wrapper{align-items:flex-start}
-.a1-title{width:100%;margin-bottom:5rem;position:relative;z-index:2}
-.a1-title h5{color:var(--ink);font-size:65px;line-height:1.3;font-weight:700}
-.a1-title h5 span{color:var(--white);padding:2px 10px;font-weight:800;border-radius:7px;background:var(--main)}
-.a1-title p{display:flex;flex-wrap:wrap;gap:6px;color:var(--white);font-size:16px;font-weight:500;margin-top:2rem;max-width:620px}
-.a1-title p span{padding:4px 8px;border-radius:4px;background:var(--sub);cursor:default}
-.a1Btn{width:fit-content;color:var(--ink);font-size:19px;font-weight:500;display:flex;align-items:center;gap:10px;margin-top:5rem;transition:gap .2s;position:relative;z-index:2}
-.a1Btn:hover{gap:20px}
-.a1Btn svg{width:34px;height:14px}
-.a1-image{position:absolute;top:50%;right:-4%;transform:translateY(-50%);width:52%;max-width:760px;opacity:.95}
-.a1-image img{width:100%;border-radius:24px;box-shadow:0 30px 70px rgba(24,29,98,.18);aspect-ratio:900/659;object-fit:cover}
-.pin{position:absolute;display:flex;align-items:center;gap:10px}
-.pin b{background:var(--white);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700;color:var(--sub);box-shadow:0 6px 16px rgba(0,0,0,.08);white-space:nowrap}
-.pin-1{top:10%;left:-6%}.pin-2{top:40%;left:-10%}.pin-3{bottom:30%;left:-4%}.pin-4{bottom:8%;left:28%}
-.gps{position:relative;width:20px;height:20px;flex:none}
-.gps::before{content:'';position:absolute;left:-100%;top:-100%;width:300%;height:300%;border-radius:50%;background:var(--main);animation:pulse-ring 1.25s cubic-bezier(.215,.61,.355,1) infinite}
-.gps::after{content:'';position:absolute;inset:0;background:var(--main);border-radius:50%;animation:pulse-dot 1.25s cubic-bezier(.455,.03,.515,.955) -.4s infinite}
-@keyframes pulse-ring{0%{transform:scale(.33)}80%,100%{opacity:0}}
-@keyframes pulse-dot{0%{transform:scale(.8)}50%{transform:scale(1)}100%{transform:scale(.8)}}
-
-/* ===== article2 : 다크 스토리 ===== */
-.article2{position:relative;padding:300px 0;background:linear-gradient(to bottom,#000 0%,var(--sub) 100%);overflow:hidden}
-.a2-flow-wrapper{position:absolute;top:0;left:0;width:100%;padding:20px 0;user-select:none;overflow:hidden;z-index:3;background:var(--main)}
-.a2-flow-wrapper.flow2{top:auto;bottom:0}
-.a2-flow-wrapper.navy{background:var(--sub)}
-.a2-flow{display:flex;align-items:center;gap:3rem;width:max-content;animation:slide 30s linear infinite}
-.a2-flow span{font-family:var(--en);font-style:italic;font-weight:800;font-size:22px;color:var(--white);white-space:nowrap;letter-spacing:.02em}
-.a2-flow span::after{content:'✦';margin-left:3rem;font-style:normal;opacity:.7}
-@keyframes slide{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(-50%,0,0)}}
-.a2-title{color:var(--white);font-size:45px;font-weight:600;line-height:1.5;text-align:center}
-.a2-title span{color:var(--main)}
-.a2-circle-wrapper{display:flex;flex-direction:column;align-items:center;gap:3rem;margin:16rem 0}
-.a2-circle{width:12px;height:12px;border-radius:50%}
-.a2-circle:nth-child(1){background:rgba(255,255,255,.3)}.a2-circle:nth-child(2){background:rgba(255,255,255,.6)}.a2-circle:nth-child(3){background:var(--white)}
-.a2-big{color:var(--white);font-size:77px;font-weight:700;text-align:center}
-.a2-big::after{content:'|';font-weight:300;animation:blink .8s infinite;margin-left:4px}
-.a2-arrow{margin:13rem 0}
-.a2-arrow span{display:block;width:50px;height:50px;border-bottom:4px solid #fff;border-right:4px solid #fff;transform:rotate(45deg);animation:chev 1s infinite;margin:-10px 0}
-.a2-arrow span:nth-child(2){animation-delay:-.2s}.a2-arrow span:nth-child(3){animation-delay:-.4s}
-@keyframes chev{0%{opacity:0;transform:rotate(45deg) translate(-20px,-20px)}50%{opacity:1}100%{opacity:0;transform:rotate(45deg) translate(20px,20px)}}
-.a2-logo{font-family:var(--en);font-style:italic;font-weight:800;color:var(--white);font-size:clamp(48px,10vw,150px);line-height:1;text-align:center;letter-spacing:-0.02em}
-.a2-logo b{color:var(--main)}
-.a2-text{color:var(--white);margin-top:2rem;text-align:center}
-.a2-text p{font-size:46px;font-weight:600;margin-bottom:13rem}
-.a2-text h5{font-size:62px;font-weight:400;line-height:1.5}
-.a2-text h5 span{font-weight:700;padding:4px 14px;border-radius:7px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.1);display:inline-block;margin:4px 2px}
-
-/* ===== article3 : 0.3초 ===== */
-.article3{position:relative;padding:200px 0;background:#070812;overflow:hidden}
-.article3::before{content:'';position:absolute;inset:0;background:url(assets/img/face.jpg) right center/60% auto no-repeat;opacity:.35;mask:linear-gradient(90deg,transparent 25%,#000 70%);-webkit-mask:linear-gradient(90deg,transparent 25%,#000 70%)}
-.article3::after{content:'';position:absolute;right:-10%;top:50%;width:60vw;height:60vw;max-width:900px;max-height:900px;border-radius:50%;background:radial-gradient(circle,rgba(255,100,38,.35),transparent 60%);transform:translateY(-50%);pointer-events:none}
-.article3 .article-wrapper{align-items:flex-start;position:relative;z-index:2}
-.a3-text h5{color:var(--white);font-size:75px;font-weight:800;line-height:1.1}
-.a3-text h5 span{color:var(--main);font-family:var(--en);font-style:italic}
-.a3-text p{color:var(--white);max-width:560px;font-size:24px;font-weight:300;line-height:1.7;margin-top:3rem}
-.a3-text p b{font-weight:700}
-.a3-text p span{color:var(--main);font-weight:800}
-.a3-stats{display:flex;gap:3rem;margin-top:3rem;flex-wrap:wrap}
-.a3-stats div{color:var(--white)}
-.a3-stats strong{display:block;font-family:var(--en);font-size:40px;font-weight:800;color:var(--main);font-variant-numeric:tabular-nums}
-.a3-stats small{font-size:14px;opacity:.8}
-
-/* ===== article4 : 도입 여정 타임라인 ===== */
-.article4{background:var(--paper);position:relative;overflow:hidden}
-.article4::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 10% 50%,rgba(24,29,98,.07),transparent 50%);pointer-events:none}
-.h-wrapper{width:100%;display:flex;justify-content:space-between;gap:3rem;position:relative;z-index:2}
-.a4-title{position:sticky;top:100px;height:fit-content;margin-top:-10px}
-.a4-title h5{color:var(--sub);font-size:85px;font-weight:800;letter-spacing:-0.04em;line-height:1.15}
-.a4-title h5 span{display:flex;align-items:center;gap:.1em}
-.a4-title h5 span i{display:inline-grid;place-items:center;width:.9em;height:.9em;border-radius:.2em;background:var(--main);color:var(--white);font-style:normal;font-family:var(--en);font-size:.7em}
-.a4-title p{color:var(--muted);font-size:18px;margin-top:1.5rem}
-.h-box-wrapper{width:60%;position:relative;display:flex;flex-direction:column;gap:2rem;z-index:10}
-.h-box-wrapper::after{content:'';position:absolute;top:0;left:132px;width:2px;height:100%;background:#eee;z-index:1}
-.h-box{width:100%;padding-bottom:6rem;display:flex;align-items:flex-start;gap:5rem;border-bottom:1px dashed #ddd}
-.h-box:last-child{border:none;padding-bottom:0}
-.h-box-year{display:flex;align-items:center;gap:3rem}
-.h-box-year h5{width:77px;color:var(--main);font-size:20px;font-weight:800;white-space:nowrap;letter-spacing:-0.04em;font-family:var(--en)}
-.h-box-year span{position:relative;width:16px;height:16px;display:flex;border-radius:50%;background:var(--main);z-index:2}
-.h-box-year span::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:#fff}
-.h-box-info{display:flex;flex-direction:column;gap:1rem}
-.h-box-info li{color:var(--muted);font-size:17px;line-height:1.65}
-.h-box-info li:first-child{color:var(--main);font-size:20px;font-weight:700}
-
-/* ===== article5 : 주요기능 ===== */
-.article5{position:relative;padding:0;overflow:hidden}
-.a5-wrapper{width:100%;display:flex;justify-content:space-between;gap:5rem}
-.a5-left{width:60%;padding:200px 0}
-.a5-left .at-title{text-align:left;margin-top:-2rem}
-.a5-left .at-title h5{display:flex;gap:1rem;align-items:center}
-.a5-box-wrapper{gap:1rem}
-.a5-box{padding:34px 36px;display:flex;flex-direction:row-reverse;justify-content:space-between;align-items:center;border-radius:8px;background:var(--white);box-shadow:0 4px 16px rgba(0,0,0,.03);gap:1rem}
-.a5-box-text p{color:var(--soft);font-size:15px;font-weight:600;margin-bottom:8px;font-family:var(--en)}
-.a5-box-text h5{color:var(--ink);font-size:20px;font-weight:700}
-.a5-box-text small{display:block;color:var(--muted);font-size:13px;margin-top:6px;font-weight:400}
-.a5-box-icon{width:66px;height:66px;flex:none;display:grid;place-items:center;border-radius:20px;background:var(--main);color:var(--white)}
-.a5-box-icon svg{width:32px;height:32px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.a5-right{width:40%;position:relative;min-height:600px}
-.a5-flow-wrapper{position:absolute;inset:0;overflow:hidden}
-.a5-flow-wrapper::before,.a5-flow-wrapper::after{content:'';position:absolute;left:0;width:100%;height:120px;z-index:2;pointer-events:none}
-.a5-flow-wrapper::before{top:0;background:linear-gradient(var(--paper2),transparent)}
-.a5-flow-wrapper::after{bottom:0;background:linear-gradient(transparent,var(--paper2))}
-.a5-flow{display:flex;flex-direction:column;gap:2rem;animation:slide2 24s linear infinite}
-.a5-flow img{width:100%;border-radius:10px;aspect-ratio:4/3;object-fit:cover}
-.a5-flow-wrapper:hover .a5-flow{animation-play-state:paused}
-@keyframes slide2{0%{transform:translate3d(0,0,0)}100%{transform:translate3d(0,-50%,0)}}
-
-/* ===== article6 : 하드웨어 ===== */
-.article6{background:#000;background:linear-gradient(90deg,#0000ff 0%,#000 15%,#000 50%,#000 85%,#0000ff 100%)}
-.a6-title h5,.a6-title p{color:var(--white)}
-.a6-title .at-sb{color:var(--white)}
-.a6-box{position:relative;display:block}
-.a6-box-text{position:absolute;bottom:30px;right:30px;text-align:right;z-index:10;color:var(--white)}
-.a6-box-text h5{font-size:32px;font-weight:700}
-.a6-box-text p{font-size:15px;margin-top:.6rem;opacity:.9}
-.a6-box-text em{display:block;font-style:normal;font-family:var(--en);font-size:12px;letter-spacing:.12em;color:var(--main);font-weight:700;margin-bottom:.6rem}
-.a6-box-image{position:relative;border-radius:12px;overflow:hidden;aspect-ratio:16/10;background:#111}
-.a6-box-image::before{content:'';position:absolute;bottom:0;left:0;width:100%;height:60%;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,transparent 100%);z-index:1}
-.a6-box-image img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
-.a6-box:hover .a6-box-image img{transform:scale(1.06)}
-.a6-partners{margin-top:5rem;display:flex;flex-wrap:wrap;gap:1rem 3rem;justify-content:center;align-items:center;color:rgba(255,255,255,.75);font-family:var(--en);font-weight:700;font-size:15px;letter-spacing:.08em}
-.a6-partners small{width:100%;text-align:center;font-family:var(--font);font-weight:500;letter-spacing:0;color:rgba(255,255,255,.5);font-size:13px;margin-bottom:.4rem}
-.a6-partners span::before{content:'✦';color:var(--main);margin-right:8px}
-
-/* ===== article7 : 요금 ===== */
-.price-wrapper{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
-.price{background:var(--white);border-radius:8px;padding:40px;box-shadow:0 4px 20px rgba(0,0,0,.06);position:relative;display:flex;flex-direction:column;gap:.6rem;border:2px solid transparent}
-.price.hot{border-color:var(--main)}
-.price .tag{position:absolute;top:-14px;left:40px;background:var(--main);color:var(--white);font-size:13px;font-weight:700;padding:5px 12px;border-radius:999px}
-.price p{color:var(--soft);font-size:15px;font-weight:600}
-.price h5{font-size:38px;font-weight:800;color:var(--sub);font-variant-numeric:tabular-nums}
-.price h5 small{font-size:16px;font-weight:600;color:var(--muted)}
-.price li{font-size:14px;color:var(--muted);padding-left:18px;position:relative;line-height:1.6}
-.price li::before{content:'✓';position:absolute;left:0;color:var(--main);font-weight:800}
-.hw-list{width:100%;margin-top:3rem;background:var(--white);border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.06);padding:10px 40px}
-.hw-list h6{font-size:16px;font-weight:700;color:var(--sub);padding:22px 0 6px}
-.hw-list li{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:16px 0;border-bottom:1px dashed #ddd;font-size:16px}
-.hw-list li:last-child{border:none}
-.hw-list li small{display:block;color:var(--soft);font-size:13px;margin-top:3px}
-.hw-list li strong{font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
-.price-note{margin-top:1.5rem;color:var(--muted);font-size:14px;text-align:center;line-height:1.7}
-.price-cta{margin-top:2rem}
-
-/* ===== article8 : FAQ 카드 ===== */
-.article8 .article-wrapper{width:100%;padding:0}
-.faq-track{--gut:max(20px,calc((100vw - 1400px)/2 + 20px));display:flex;gap:1.5rem;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding:0 var(--gut);padding:10px var(--gut) 30px;width:100%;scrollbar-width:thin}
-.faq-card{flex:0 0 420px;max-width:85vw;scroll-snap-align:start;position:relative;padding:50px;display:flex;flex-direction:column;gap:2rem;border-radius:8px;background:var(--white);box-shadow:0 4px 20px rgba(0,0,0,.08);overflow:hidden}
-.faq-card::after{content:'Q';position:absolute;bottom:-12%;right:-4%;font-family:var(--en);font-weight:800;font-style:italic;font-size:220px;color:#000;opacity:.04;line-height:1}
-.ss-top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
-.ss-profile{display:flex;align-items:center;gap:12px}
-.ss-profile i{width:44px;height:44px;border-radius:50%;background:var(--sub);color:var(--white);display:grid;place-items:center;font-style:normal;font-weight:800;font-family:var(--en);flex:none}
-.ss-profile h5{color:var(--ink);font-size:18px;font-weight:800;line-height:1.4}
-.ss-star{display:flex;gap:1px;color:var(--main);font-size:15px;flex:none;padding-top:12px}
-.ss-bottom p{color:#444;font-size:16px;line-height:1.7;position:relative;z-index:1}
-
-/* ===== article9 : 문의 폼 ===== */
-.form-wrapper{width:100%;max-width:1100px}
-.a9-form{width:100%;display:flex;flex-direction:column;align-items:center}
-.a9-personal{width:100%;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:14px 20px;background:#fff1eb;border-left:4px solid var(--main);margin-bottom:1rem}
-.a9-personal label{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer}
-.a9-personal label input{accent-color:var(--main);width:18px;height:18px}
-.a9-personal button{background:#999;color:var(--white);border:none;font-size:12px;padding:6px 12px;cursor:pointer}
-.input-group{width:100%;padding:20px 0;display:flex;justify-content:space-between;align-items:center;gap:4rem;border-bottom:1px dashed #bbb}
-.input-wrapper{width:50%;display:flex;align-items:center;gap:1rem;min-width:0}
-.input-wrapper.full{width:100%}
-.input-title{width:100px;min-width:100px}
-.input-title h5{color:#444;font-size:15px;font-weight:600}
-.input-title h5 span{color:red}
-.inputbox,.a9-form textarea{color:var(--ink);width:100%;height:47px;padding:0 15px;font-size:15px;border-radius:0;border:1px solid #ddd;background:var(--white)}
-.a9-form textarea{height:140px;padding:15px;resize:vertical}
-.inputbox::placeholder,.a9-form textarea::placeholder{color:#bbb}
-.inputbox:focus,.a9-form textarea:focus{border-color:var(--sub)}
-.radio-wrapper{width:100%;display:flex;gap:5px;flex-wrap:wrap}
-.radio-wrapper input{position:absolute;opacity:0;width:0;height:0}
-.radio-wrapper label{flex:1;color:#333;padding:12px 6px;font-size:14px;border:1px solid #ddd;background:var(--white);text-align:center;cursor:pointer;user-select:none;white-space:nowrap}
-.radio-wrapper label:hover{background:#f8f8f8}
-.radio-wrapper input:checked+label{color:var(--white);font-weight:500;border-color:var(--sub);background:var(--sub)}
-.radio-wrapper input:focus-visible+label{outline:2px solid var(--main)}
-.a9-submit{color:var(--white);width:100%;height:55px;font-size:17px;font-weight:600;border:none;background:var(--sub);cursor:pointer;margin-top:2rem;transition:filter .2s}
-.a9-submit:hover{filter:brightness(1.2)}
-.form-msg{margin-top:1rem;font-size:15px;color:var(--main);font-weight:600;min-height:1.5em;text-align:center}
-
-/* ===== floating ===== */
-.floating{position:sticky;bottom:-1px;width:100%;display:flex;justify-content:center;align-items:center;padding:16px max(20px,env(safe-area-inset-left,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-right,0px));box-shadow:0 -10px 20px rgba(0,0,0,.1);background:var(--main);z-index:97}
-.floating-wrapper{width:1400px;max-width:100%;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
-.floating-title{display:flex;align-items:center;gap:20px}
-.f-tel{width:52px;height:52px;flex:none;color:var(--white);animation:ring 1.4s infinite ease-in-out}
-.f-tel svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-@keyframes ring{0%{transform:translateY(0)}10%{transform:translateY(-3px)}20%{transform:translateY(0)}30%{transform:translateY(-3px)}40%,100%{transform:translateY(0)}}
-.ft-text p{color:var(--white);font-size:18px;font-weight:600}
-.ft-text a{color:var(--white);font-size:40px;font-weight:700;font-family:var(--en);line-height:1.1;letter-spacing:-0.01em}
-.f-form{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.f-form .inputbox,.f-form .selectbox{width:200px;height:46px;padding:0 14px;font-size:15px;background:var(--white);border:none;color:var(--ink)}
-.f-form .selectbox{color:#555}
-.f-form button{height:46px;padding:0 26px;background:var(--sub);color:var(--white);border:none;font-size:15px;font-weight:600;cursor:pointer}
-.f-form label{display:flex;align-items:center;gap:6px;color:var(--white);font-size:13px;white-space:nowrap}
-.f-form label input{accent-color:var(--sub)}
-.topBtn{position:fixed;bottom:calc(110px + env(safe-area-inset-bottom,0px));right:calc(40px + env(safe-area-inset-right,0px));width:50px;height:50px;display:grid;place-items:center;box-shadow:6px 6px 18px rgba(0,0,0,.25);background:var(--sub);color:var(--white);cursor:pointer;z-index:97;border:none;font-size:12px;font-weight:700;font-family:var(--en);opacity:0;pointer-events:none;transition:opacity .3s}
-.topBtn.show{opacity:1;pointer-events:auto}
-.topBtn::before{content:'';width:10px;height:10px;border-top:2px solid #fff;border-left:2px solid #fff;transform:rotate(45deg);margin-bottom:-2px}
-
-/* ===== footer ===== */
-footer{width:100%;display:flex;flex-direction:column;align-items:center;background:var(--black);padding:60px max(20px,env(safe-area-inset-left,0px)) calc(60px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-right,0px))}
-.logo-f{width:200px;margin-bottom:1.6rem}
-.f-info p{color:var(--white);font-size:14px;line-height:1.8;text-align:center;letter-spacing:0;opacity:.9}
-.f-info p span{opacity:.4;margin:0 8px}
-.f-info .copy{margin-top:1rem;opacity:.6;font-size:13px}
-.f-links{display:flex;gap:1.5rem;margin-top:1.4rem}
-.f-links a{color:var(--white);font-size:13px;opacity:.7;border:1px solid rgba(255,255,255,.3);padding:6px 14px;border-radius:999px}
-.f-links a:hover{opacity:1;border-color:var(--main)}
-
-/* ===== responsive ===== */
-@media (max-width:1450px){.a1-image{width:46%}}
-@media (max-width:1350px){nav{padding:0 max(20px,env(safe-area-inset-left,0px)) 0 max(20px,env(safe-area-inset-right,0px))}nav ul{gap:2.2rem}}
-@media (max-width:1250px){
-  .h-wrapper{flex-direction:column}
-  .a4-title{position:static;margin-top:0}
-  .h-box-wrapper{width:100%;margin-top:3rem}
-  .article5{padding:60px 0}
-  .a5-wrapper{flex-direction:column}
-  .a5-left{padding:0;width:100%}
-  .a5-left .at-title{text-align:center;margin-top:4rem}
-  .a5-left .at-title h5{justify-content:center}
-  .a5-right{width:100%}
-  .a5-right{min-height:0}
-  .a5-flow-wrapper{position:relative;inset:auto;height:auto;width:100%}
-  .a5-flow-wrapper::before,.a5-flow-wrapper::after{display:none}
-  .a5-flow{flex-direction:row;width:max-content;animation:slide 18s linear infinite}
-  .a5-flow img{width:360px}
-  .a1-image{position:relative;top:auto;right:auto;transform:none;width:100%;max-width:640px;margin-top:3rem;align-self:center}
-  .pin-1{top:8%;left:2%}.pin-2{top:40%;left:2%}.pin-3{bottom:30%;left:2%}.pin-4{bottom:6%;left:30%}
-  .article1{min-height:0}
-  .price-wrapper{grid-template-columns:1fr}
-}
-@media (max-width:1050px){
-  header{height:75px}
-  nav label{display:flex;z-index:8;cursor:pointer}
-  .menuBtns{display:inline-block}
-  nav ul{position:fixed;top:0;left:-100%;width:80%;height:100vh;padding-left:50px;flex-direction:column;justify-content:center;align-items:flex-start;background:var(--sub);transition:left .25s;z-index:7;gap:2.2rem}
-  nav ul li a{color:var(--white);font-size:26px}
-  .nav-cta{font-size:18px!important}
-  .overlay{position:fixed;inset:0;display:block;background:rgba(0,0,0,.6);transition:all .3s;opacity:0;visibility:hidden;z-index:6}
-  .bar1,.bar2,.bar3{width:24px;height:2px;background:#fff;margin:6px 0;transition:.3s;display:block}
-  #check:checked~ul{left:0}
-  #check:checked~.overlay{opacity:1;visibility:visible}
-  #check:checked~label .bar1{transform:rotate(-45deg) translate(-5px,2px)}
-  #check:checked~label .bar2{opacity:0}
-  #check:checked~label .bar3{transform:rotate(45deg) translate(-9px,-6px)}
-  .p-visual{position:relative;right:auto;bottom:auto;width:70%;max-width:420px;margin:3rem auto 0}
-  .promotion{height:auto;max-height:none;padding:140px 0 100px}
-  .p-shape{top:52%;height:48%}
-  .promotion-wrapper{flex-direction:column;align-items:flex-start}
-  .a6-box-wrapper{gap:1.5rem}
-  .floating-wrapper{justify-content:center;text-align:center}
-  .f-form{display:none}
-}
-@media (max-width:850px){
-  .article{padding:80px 0}
-  .at-title{margin-bottom:3rem}.at-sb{width:30px;height:30px}
-  .at-title h5{font-size:45px}.at-title p{font-size:18px}
-  .p-text h1{font-size:56px}.p-text .p-sub{font-size:20px}
-  .a1-title h5{font-size:44px}
-  .a2-title{font-size:32px}.a2-circle-wrapper{margin:10rem 0}.a2-big{font-size:46px}
-  .a2-text p{font-size:28px;margin-bottom:8rem}.a2-text h5{font-size:38px}
-  .article3{padding:150px 0}.a3-text h5{font-size:52px}.a3-text p{font-size:19px;margin-top:2rem}
-  .a4-title h5{font-size:60px}.h-box{gap:3rem}
-  .a5-box{position:relative;flex-direction:row}
-  .a5-box{padding-right:90px}
-  .a5-box-icon{position:absolute;top:30px;right:26px;width:50px;height:50px;border-radius:12px}
-  .a5-box-icon svg{width:24px;height:24px}
-  .a6-box-text h5{font-size:26px}.a6-box-text p{font-size:14px}
-  .input-group{flex-direction:column;gap:1.2rem;align-items:stretch}
-  .input-wrapper{width:100%}
-}
-@media (max-width:550px){
-  header{height:60px}header.Fixed{height:60px}.logo{width:120px}
-  .bar1,.bar2,.bar3{margin:3px 0}.bar2{opacity:0}
-  #check:checked~label .bar1{transform:rotate(-45deg) translate(-3px,3px)}
-  #check:checked~label .bar3{transform:rotate(45deg) translate(-4px,-4px)}
-  .at-sb{width:24px;height:24px}.at-title h5{font-size:36px}.at-title p{font-size:15px}
-  .p-text h1{font-size:44px}.p-text .p-sub{font-size:18px}.pBtn{width:100%}
-  .a1-title h5{font-size:34px}.a1Btn{font-size:16px;margin-top:3rem}
-  .article2{padding:200px 0 120px}.a2-flow-wrapper{padding:14px 0}.a2-flow span{font-size:16px}
-  .a2-title{font-size:24px}.a2-big{font-size:34px}.a2-arrow{margin:8rem 0}
-  .a2-arrow span{width:30px;height:30px;border-width:3px}
-  .a2-text p{font-size:22px;margin-bottom:6rem}.a2-text h5{font-size:28px}
-  .article3{padding:120px 0}.a3-text h5{font-size:40px}.a3-text p{font-size:16px}
-  .a3-stats strong{font-size:30px}
-  .a4-title h5{font-size:46px}
-  .h-box-wrapper::after{left:86px}.h-box{padding-bottom:3rem;gap:2rem}
-  .h-box-year{gap:1rem}.h-box-year h5{width:65px;font-size:15px}
-  .h-box-year span{width:12px;height:12px}.h-box-year span::after{width:6px;height:6px}
-  .h-box-info li{font-size:15px}.h-box-info li:first-child{font-size:16px}
-  .a5-box-wrapper{grid-template-columns:1fr}.a5-box{padding:26px 90px 26px 26px}.a5-box-text h5{font-size:17px}.a5-flow img{width:260px}
-  .ss-star{display:none}
-  .a6-box-wrapper{grid-template-columns:1fr}
-  .article6{background:linear-gradient(to bottom,#0000ff 0%,#000 10%,#000 90%,#0000ff 100%)}
-  .faq-card{padding:35px 25px;flex-basis:320px}
-  .hw-list{padding:6px 20px}.hw-list li{font-size:14px}
-  .ft-text p{font-size:15px}.ft-text a{font-size:30px}
-  .f-info p span{display:block;height:0;overflow:hidden}
-  footer{padding-top:40px}.logo-f{width:160px}
-  .topBtn{right:calc(16px + env(safe-area-inset-right,0px))}
-}
-</style>
-
-<!-- ===== Header ===== -->
-<header id="header">
-  <nav>
-    <a class="logo" href="#hero" data-nav="hero"><img src="assets/img/logo.png" alt="CheckGym 체크짐 회원관리프로그램"></a>
-    <input type="checkbox" id="check">
-    <label for="check" class="menuBtns" aria-label="메뉴 열기"><span class="bar1"></span><span class="bar2"></span><span class="bar3"></span></label>
-    <ul>
-      <li><a href="#why" data-nav="why">Why CHECKGYM</a></li>
-      <li><a href="#features" data-nav="features">주요기능</a></li>
-      <li><a href="#hardware" data-nav="hardware">하드웨어</a></li>
-      <li><a href="#pricing" data-nav="pricing">요금안내</a></li>
-      <li><a href="#faq" data-nav="faq">자주 묻는 질문</a></li>
-      <li><a href="#contact" data-nav="contact">도입문의</a></li>
-      <li><a class="nav-cta" href="https://onerm.net/mng">체크짐 실행</a></li>
-    </ul>
-    <label for="check" class="overlay"></label>
+  <nav class="landing-nav">
+    <span class="landing-nav-link active" data-navlink="hero">메인</span>
+    <span class="landing-nav-link" data-navlink="pricing">솔루션 요금표</span>
+    <span class="landing-nav-link" data-navlink="showcase">작동 쇼케이스</span>
+    <span class="landing-nav-link" data-navlink="features">체크짐v2 특장점</span>
+    <span class="landing-nav-link" data-navlink="pricing">실시간 견적</span>
+    <span class="landing-nav-link" data-navlink="consult">가입 신청</span>
+    <span class="landing-nav-link" data-navlink="faq">자주 묻는 질문</span>
   </nav>
+
+  <div class="flex items-center">
+    <a class="btn-run-checkgym" href="https://onerm.net/mng" style="padding: 0.5rem 1.2rem; font-size: 0.85rem; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);">
+      체크짐 실행
+    </a>
+  </div>
 </header>
 
-<!-- ===== Hero ===== -->
-<section class="promotion" id="hero">
-  <svg class="p-shape" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-    <path d="M50 0 H100 V9 L45 100 H24 Z" fill="#ff6426"/>
-    <path d="M100 56 V100 H72 Z" fill="#ff6426"/>
-  </svg>
-  <div class="promotion-wrapper">
-    <div class="p-text">
-      <div class="p-badge rv in"><i></i>CLOUD 기반 피트니스 회원관리 솔루션</div>
-      <h1 class="rv in">출석은 <em>0.3초</em><small>관리는 체크짐 V2</small></h1>
-      <p class="p-sub rv in d1">관장 출신 대표가 직접 만드는 회원관리프로그램</p>
-      <p class="p-desc rv in d1">회원 등록부터 얼굴인식 출입, 키오스크 결제, 자동문 연동까지 한 번에</p>
-      <div class="p-btns rv in d2">
-        <a class="pBtn" href="#contact">프로그램 신청</a>
-        <a class="pBtn ghost" href="https://onerm.net/mng">체크짐 실행</a>
+<!-- 2. Hero Section -->
+<section id="hero" class="hero-section">
+  <div class="hero-glow-1"></div>
+  <div class="hero-glow-2"></div>
+
+  <div class="hero-container">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <svg class="w-4 h-4 animate-pulse text-emerald-400 fill-emerald-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+        Cloud 기반 피트니스 솔루션 대공개
+      </div>
+      <h1 class="hero-title">회원관리프로그램 <span>체크짐 V2</span> </h1>
+      <p class="hero-subtitle">관장출신 대표가 직접 만들고 있는 믿고 쓰는 회원관리프로그램</p>
+      <div class="hero-actions">
+        <a class="btn-primary" href="#consult" data-navlink="consult">
+          프로그램 신청          <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a class="btn-run-checkgym" href="https://onerm.net/mng">
+          체크짐 실행
+        </a>
       </div>
     </div>
-    <div class="p-visual rv in d2">
-      <div class="p-card"><img src="assets/img/face.jpg" alt="체크짐 AI 안면인식 단말기"></div>
-      <div class="p-chip"><i>OK</i><div><b>ACCESS GRANTED · 0.32s</b><span>김철수 회원님 · 남은 기간 45일</span></div></div>
-    </div>
-  </div>
-  <a class="scrollDown" href="#why" aria-label="아래로 스크롤"></a>
-</section>
 
-<!-- ===== Article1 : 하나의 프로그램 ===== -->
-<section class="article article1 grid-bg" id="why">
-  <div class="article-wrapper">
-    <div class="a1-title rv">
-      <h5>하나의 프로그램으로<br><span>센터 운영 전부 자동화!</span></h5>
-      <p>
-        <span>#전자계약서</span><span>#QR레슨예약</span><span>#원클릭양수도</span><span>#운영리포트</span>
-        <span>#자동문자19종</span><span>#미납만기제어</span><span>#카운터키오스크</span><span>#얼굴인식출입</span><span>#지문인식출입</span>
-      </p>
-    </div>
-    <a class="a1Btn rv d1" href="#features">주요 기능 보러가기
-      <svg viewBox="0 0 34 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M0 7h32M26 1l6 6-6 6"/></svg>
-    </a>
-    <div class="a1-image rv d1">
-      <img src="assets/img/kiosk.jpg" alt="체크짐 카운터용 키오스크">
-      <div class="pin pin-1"><span class="gps"></span><b>얼굴인식 게이트 연동</b></div>
-      <div class="pin pin-2"><span class="gps"></span><b>24시간 무인 결제</b></div>
-      <div class="pin pin-3"><span class="gps"></span><b>문화비 소득공제 분리결제</b></div>
-      <div class="pin pin-4"><span class="gps"></span><b>입·퇴실 안심 문자</b></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== Article2 : 다크 스토리 ===== -->
-<section class="article article2">
-  <div class="a2-flow-wrapper"><div class="a2-flow" data-marquee></div></div>
-  <div class="article-wrapper">
-    <p class="a2-title rv">기능 추가 비용 <span>0원</span>, 업데이트 <span>무료</span>!<br>기본 이용료 하나로 모든 기능을 쓰는 비결이 뭘까요?</p>
-    <div class="a2-circle-wrapper rv"><span class="a2-circle"></span><span class="a2-circle"></span><span class="a2-circle"></span></div>
-    <h5 class="a2-big rv">단순한 가격 경쟁일까요?</h5>
-    <div class="a2-arrow rv"><span></span><span></span><span></span></div>
-    <div class="a2-logo rv">CHECK<b>GYM</b> V2</div>
-    <div class="a2-text">
-      <p class="rv">관장 출신 대표가 현장에서 직접 만들기 때문입니다.</p>
-      <h5 class="rv"><span>회원관리</span> + <span>출입통제</span> + <span>무인결제</span> 를 한 번에<br>단 하나의 회원관리프로그램!</h5>
-    </div>
-  </div>
-  <div class="a2-flow-wrapper flow2"><div class="a2-flow" data-marquee></div></div>
-</section>
-
-<!-- ===== Article3 : 0.3초 ===== -->
-<section class="article article3">
-  <div class="article-wrapper">
-    <div class="a3-text">
-      <h5 class="rv">출석은 <span>0.3초</span>에서 시작한다</h5>
-      <p class="rv d1"><b>'0.3초'</b>는 체크짐 안면인식 단말기가 회원을 알아보는 시간입니다. <b>IR 적외선 3D 라이브 감지</b>로 사진·동영상 대리 출석을 막고, 오인식률 <b>0.0001% 미만</b>의 금융권 등급 엔진이 입실과 동시에 출석을 완료합니다. 회원에게는 <b>기다림 없는 입장</b>을, 관리자에게는 <span>무인 운영</span>을 드립니다.</p>
-      <div class="a3-stats rv d2">
-        <div><strong>0.3s</strong><small>얼굴 인식 시간</small></div>
-        <div><strong>0.0001%</strong><small>오인식률 (금융권 등급)</small></div>
-        <div><strong>IR 3D</strong><small>라이브 감지로 대리출석 차단</small></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== Article4 : 도입 여정 ===== -->
-<section class="article article4">
-  <div class="article-wrapper">
-    <div class="h-wrapper">
-      <div class="a4-title rv">
-        <h5>도입 5단계<br><span><i>C</i>의 여정</span></h5>
-        <p>상담부터 운영까지, 전담 설치 컨설턴트가 끝까지 함께합니다.</p>
-      </div>
-      <div class="h-box-wrapper">
-        <div class="h-box rv">
-          <div class="h-box-year"><h5>STEP 01</h5><span></span></div>
-          <ul class="h-box-info"><li>상담 신청</li><li>간단한 정보만 남기시면 체크짐 V2 전담 설치 컨설턴트가 신속히 도입 안내를 진행합니다. 전화·카카오톡·홈페이지 어디로든 가능합니다.</li></ul>
+    <div class="hero-visual">
+      <div class="premium-card-visual">
+        <div class="flex justify-between items-start mb-6">
+          <span class="text-xs font-bold text-gray-500 tracking-wider uppercase">CheckGym Premium Pass</span>
+          <svg class="w-5 h-5 text-emerald-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
         </div>
-        <div class="h-box rv">
-          <div class="h-box-year"><h5>STEP 02</h5><span></span></div>
-          <ul class="h-box-info"><li>실시간 견적 · 제안서</li><li>월납 / 1년 / 2년 요금과 키오스크·얼굴인식·지문인식 장비를 조합해 사은 개월 수까지 반영된 종합 혜택 제안서를 바로 받아보세요.</li></ul>
+        <div class="mb-8">
+          <h3 class="text-xl font-bold text-white mb-1">회원관리의 모든기능</h3>
+          <p class="text-xs text-emerald-400 font-semibold flex items-center gap-1">
+            <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            현장경험을 통한 모든 필요 기능
+          </p>
         </div>
-        <div class="h-box rv">
-          <div class="h-box-year"><h5>STEP 03</h5><span></span></div>
-          <ul class="h-box-info"><li>기존 데이터 무료 이전</li><li>타 프로그램을 쓰고 계셨다면 엑셀로 추출되는 모든 회원 정보를 무료로 옮겨 드립니다. 센터 운영 공백 없이 전환됩니다.</li></ul>
-        </div>
-        <div class="h-box rv">
-          <div class="h-box-year"><h5>STEP 04</h5><span></span></div>
-          <ul class="h-box-info"><li>설치 및 연동</li><li>키오스크, 출석 터치탭, 얼굴·지문인식 단말기를 설치하고 출입 게이트와 체크짐 회원 DB를 100% 연동합니다. 관리자에서 원격 문열기와 출입 로그까지 바로 확인됩니다.</li></ul>
-        </div>
-        <div class="h-box rv">
-          <div class="h-box-year"><h5>STEP 05</h5><span></span></div>
-          <ul class="h-box-info"><li>운영 · 무료 수시 업데이트</li><li>기능이 추가되어도 이용료는 그대로. 센터 고견을 접수해 반영하고, 전자계약서는 평생 무제한 무료로 제공됩니다.</li></ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== Article5 : 주요기능 ===== -->
-<section class="article article5 grid-bg2" id="features">
-  <div class="article-wrapper">
-    <div class="a5-wrapper">
-      <div class="a5-left">
-        <div class="at-title rv">
-          <h5>주요기능 <svg class="at-sb" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></h5>
-          <p>피트니스 센터 운영의 디지털 전환을 이끄는 체크짐만의 스마트 기능</p>
-        </div>
-        <div class="grid grid2 a5-box-wrapper">
-          <div class="a5-box rv"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></div><div class="a5-box-text"><p>01</p><h5>전자계약서</h5><small>서명·촬영과 동시에 회원·결제 실시간 연동, PDF 자동 생성</small></div></div>
-          <div class="a5-box rv d1"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3M21 14v7h-7"/></svg></div><div class="a5-box-text"><p>02</p><h5>QR 레슨예약</h5><small>앱 설치 없이 모바일 웹 링크로 예약, 노쇼 터치 차감</small></div></div>
-          <div class="a5-box rv"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></div><div class="a5-box-text"><p>03</p><h5>원클릭 양수도</h5><small>잔여 기간·횟수 자동 산출, 수수료 결제와 면책 서명까지</small></div></div>
-          <div class="a5-box rv d1"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-5 4 3 5-7"/></svg></div><div class="a5-box-text"><p>04</p><h5>운영리포트</h5><small>일일·월간·연간 매출, 방문 히트맵, 재등록율 통합 뷰</small></div></div>
-          <div class="a5-box rv"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg></div><div class="a5-box-text"><p>05</p><h5>실시간 알림 시스템</h5><small>만료 7일·3일 전 재등록 안내, 결제 영수증 자동 통보</small></div></div>
-          <div class="a5-box rv d1"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div class="a5-box-text"><p>06</p><h5>미납·만기 자동제어</h5><small>미납·만기 회원 게이트 자동 잠금, 결제 안내 음성 송출</small></div></div>
-          <div class="a5-box rv"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div class="a5-box-text"><p>07</p><h5>자동문자 19종</h5><small>입·퇴실 안심 문자, 결제·예약 알림, 야간 발송 제한</small></div></div>
-          <div class="a5-box rv d1"><div class="a5-box-icon"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg></div><div class="a5-box-text"><p>08</p><h5>문화비 소득공제 분리결제</h5><small>국내 유일, PG 결제 단계에서 소득공제 항목 자동 분산</small></div></div>
-        </div>
-      </div>
-      <div class="a5-right">
-        <div class="a5-flow-wrapper">
-          <div class="a5-flow">
-            <img src="assets/img/edoc.jpg" alt="전자계약서 화면">
-            <img src="assets/img/lesson.jpg" alt="레슨예약 화면">
-            <img src="assets/img/report.jpg" alt="운영리포트 화면">
-            <img src="assets/img/touch.jpg" alt="출석 터치시스템">
-            <img src="assets/img/edoc.jpg" alt="">
-            <img src="assets/img/lesson.jpg" alt="">
-            <img src="assets/img/report.jpg" alt="">
-            <img src="assets/img/touch.jpg" alt="">
+        <div class="bg-white/5 border border-white/10 rounded-xl p-4 flex gap-4 items-center">
+          <svg class="w-8 h-8 text-emerald-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
+          <div>
+            <h4 class="text-sm font-bold text-white">무료 수시 업데이트</h4>
+            <p class="text-xs text-gray-400">센터 고견 접수 반영</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-<!-- ===== Article6 : 하드웨어 ===== -->
-<section class="article article6" id="hardware">
-  <div class="article-wrapper">
-    <div class="at-title a6-title rv">
-      <svg class="at-sb" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>
-      <h5>하드웨어 시스템</h5>
-      <p>센터 운영의 핵심 솔루션을 이루는 주요 단말기 (클릭 시 상세 안내)</p>
-    </div>
-    <div class="grid grid2 a6-box-wrapper">
-      <a class="a6-box rv" href="#contact"><div class="a6-box-image"><img src="assets/img/kiosk.jpg" alt="카운터용 키오스크"></div><div class="a6-box-text"><em>CORE SYSTEM</em><h5>카운터용 Kiosk</h5><p>15.6인치 · 신규등록·재등록·일일권 24시간 무인 결제</p></div></a>
-      <a class="a6-box rv d1" href="#contact"><div class="a6-box-image"><img src="assets/img/touch.jpg" alt="출석 터치시스템"></div><div class="a6-box-text"><em>CORE SYSTEM</em><h5>출석 터치시스템</h5><p>출석 체크와 레슨 차감 동시 처리 · 입·퇴실 SMS 자동 전송</p></div></a>
-      <a class="a6-box rv" href="#contact"><div class="a6-box-image"><img src="assets/img/face.jpg" alt="얼굴인식 출입"></div><div class="a6-box-text"><em>SUPREMA</em><h5>얼굴인식 출입</h5><p>0.3초 AI 안면인식 · 회원 DB 실시간 연동 · 원격 문열기</p></div></a>
-      <a class="a6-box rv d1" href="#contact"><div class="a6-box-image"><img src="assets/img/finger.jpg" alt="지문인식 출입"></div><div class="a6-box-text"><em>SUPREMA</em><h5>지문인식 출입</h5><p>지문 일체형 출입통제 · 입실과 동시에 출석 완료</p></div></a>
-    </div>
-    <div class="a6-partners rv">
-      <small>CheckGym V2 Official Technology Partners</small>
-      <span>SUPREMA</span><span>LG ELECTRONICS</span><span>KIS정보통신</span><span>MIZE</span>
-    </div>
+<!-- 2.5. Product Showcase Section -->
+<section id="showcase" class="showcase-section">
+  <div class="section-header">
+    <span class="badge-benefit green">REALTIME SIMULATOR</span>
+    <h2 class="section-title">하드웨어 작동 예시</h2>
+    <p class="section-desc">
+      실제 현장에 도입된 체크짐 V2 안면인식 출입 게이트와 키오스크의 연동 작동 프로세스를 눈으로 체험해 보세요.
+    </p>
   </div>
-</section>
 
-<!-- ===== Article7 : 요금안내 ===== -->
-<section class="article article7 grid-bg" id="pricing">
-  <div class="article-wrapper">
-    <div class="at-title rv">
-      <svg class="at-sb" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>
-      <h5>요금안내</h5>
-      <p>기능 추가 비용 없는 단 하나의 요금. 모든 기능을 기본 이용료로.</p>
-    </div>
-    <div class="price-wrapper">
-      <div class="price rv"><p>매월 정기결제 (월납)</p><h5>30,000<small>원 / 월</small></h5><ul><li>모든 기능 포함</li><li>무료 수시 업데이트</li><li>언제든 해지 가능</li></ul></div>
-      <div class="price hot rv d1"><span class="tag">+2개월 증정</span><p>1년 일시불 (선납)</p><h5>240,000<small>원 / 년</small></h5><ul><li>월 환산 약 17,143원</li><li>14개월 이용</li><li>전자계약서 무제한 무료</li></ul></div>
-      <div class="price rv d2"><span class="tag">+2개월 증정</span><p>2년 일시불 (선납)</p><h5>380,000<small>원 / 2년</small></h5><ul><li>26개월 이용</li><li>가장 낮은 월 단가</li><li>데이터 이전 무료</li></ul></div>
-    </div>
-    <div class="hw-list rv">
-      <h6>현장 구축형 하드웨어 (선택 · 고객 소유 일시불 구매)</h6>
-      <ul>
-        <li><div>터치 출석 입력용 탭 <small>15.6인치</small></div><strong>500,000원</strong></li>
-        <li><div>카운터용 결제 키오스크 <small>15.6인치 · 테이블 탑 타입</small></div><strong>540,000원</strong></li>
-        <li><div>결제 키오스크 <small>21.5인치 · 테이블 탑 또는 스탠드</small></div><strong>780,000원</strong></li>
-        <li><div>지문인식 출입통제 <small>지문 일체형</small></div><strong>1,200,000원</strong></li>
-        <li><div>얼굴인식 출입통제 <small>프리미엄 럭셔리</small></div><strong>2,500,000원</strong></li>
-      </ul>
-    </div>
-    <p class="price-note rv">모든 금액은 VAT 별도입니다. 얼굴·지문인식 장비는 설치비 및 지방 출장비가, 스탠드는 별도 금액이 추가될 수 있습니다.<br>하드웨어는 렌탈이 아닌 구매 장비이므로 이용 계약이 끝나도 계속 보유하십니다.</p>
-    <a class="pBtn price-cta rv" href="#contact">실시간 견적 받기</a>
-  </div>
-</section>
-
-<!-- ===== Article8 : FAQ ===== -->
-<section class="article article8 grid-bg2" id="faq">
-  <div class="article-wrapper">
-    <div class="at-title rv">
-      <svg class="at-sb" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>
-      <h5>자주 묻는 질문</h5>
-      <p>도입 전 점주님들께서 가장 많이 문의하시는 내용</p>
-    </div>
-    <div class="faq-track">
-      <div class="faq-card rv"><div class="ss-top"><div class="ss-profile"><i>Q</i><h5>기능 추가 시 이용료가 올라가나요?</h5></div><div class="ss-star">★★★★★</div></div><div class="ss-bottom"><p>체크짐은 기능 추가 시 이용료 추가가 없는 유일한 회원관리프로그램입니다. 기본 이용료에 모든 기능이 포함됩니다. 단, 시스템 설치비와 하드웨어 구매는 별도 비용이 발생합니다.</p></div></div>
-      <div class="faq-card rv d1"><div class="ss-top"><div class="ss-profile"><i>Q</i><h5>키오스크로 문화비 소득공제가 되나요?</h5></div><div class="ss-star">★★★★★</div></div><div class="ss-bottom"><p>카운터용 키오스크 한 대에서 별도 카드단말기 없이 문화비 소득공제 자동 분리결제가 가능합니다. 현재 카드단말기 사용 센터도 필요 서류가 간단합니다.</p></div></div>
-      <div class="faq-card rv d2"><div class="ss-top"><div class="ss-profile"><i>Q</i><h5>계약이 끝나면 기기를 반납하나요?</h5></div><div class="ss-star">★★★★★</div></div><div class="ss-bottom"><p>아닙니다. 하드웨어는 렌탈이 아닌 고객님 소유의 일시불 구매 장비입니다. 프로그램 이용 계약이 끝나도 장비는 계속 보유하십니다.</p></div></div>
-      <div class="faq-card rv d3"><div class="ss-top"><div class="ss-profile"><i>Q</i><h5>안드로이드탭이 있으면 이용료만 내면 되나요?</h5></div><div class="ss-star">★★★★★</div></div><div class="ss-bottom"><p>네. 체크짐은 모든 안드로이드탭에서 출석체크가 가능합니다. 다만 15.6인치 와이드 터치시스템은 회원이 남은 기간을 스스로 확인하기 쉬워 재등록에 유리하고, 얇은 베젤로 인테리어 효과도 뛰어납니다.</p></div></div>
-      <div class="faq-card rv d3"><div class="ss-top"><div class="ss-profile"><i>Q</i><h5>기존 프로그램 데이터는 옮겨지나요?</h5></div><div class="ss-star">★★★★★</div></div><div class="ss-bottom"><p>네. 타 프로그램에서 엑셀로 추출되는 모든 정보는 무료로 옮겨 드립니다.</p></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== Article9 : 도입문의 ===== -->
-<section class="article article9" id="contact">
-  <div class="article-wrapper">
-    <div class="at-title rv">
-      <svg class="at-sb" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg>
-      <h5>도입문의</h5>
-      <p>간단한 정보만 남겨 주시면 전담 설치 컨설턴트가 신속히 안내해 드립니다.</p>
-    </div>
-    <div class="form-wrapper rv">
-      <form class="a9-form" id="contactForm" novalidate>
-        <div class="a9-personal">
-          <label><input type="checkbox" id="agree" required>개인정보 수집 및 이용에 동의합니다.</label>
-          <button type="button" id="privacyBtn">내용보기</button>
+  <div class="showcase-container">
+    <!-- 가상 작동 시뮬레이터 (동영상 대용 동적 애니메이션 플레이어) -->
+    <div class="simulator-card">
+      <div class="simulator-header">
+        <div class="flex gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-red-500 block"></span>
+          <span class="w-3 h-3 rounded-full bg-yellow-500 block"></span>
+          <span class="w-3 h-3 rounded-full bg-green-500 block"></span>
         </div>
-        <div class="input-group">
-          <div class="input-wrapper"><div class="input-title"><h5>담당자 성함<span> *</span></h5></div><input class="inputbox" id="f-name" type="text" placeholder="홍길동" required></div>
-          <div class="input-wrapper"><div class="input-title"><h5>연락처<span> *</span></h5></div><input class="inputbox" id="f-phone" type="tel" placeholder="010-1234-5678" required></div>
+        <div class="simulator-title text-xs font-mono text-gray-400">
+          GATE CONTROLLER SIMULATOR
         </div>
-        <div class="input-group">
-          <div class="input-wrapper"><div class="input-title"><h5>클럽명<span> *</span></h5></div><input class="inputbox" id="f-club" type="text" placeholder="OO피트니스 OO점" required></div>
-          <div class="input-wrapper"><div class="input-title"><h5>관심 항목<span> *</span></h5></div>
-            <div class="radio-wrapper">
-              <input type="radio" name="item" id="item1" value="프로그램" checked><label for="item1">프로그램</label>
-              <input type="radio" name="item" id="item2" value="키오스크"><label for="item2">키오스크</label>
-              <input type="radio" name="item" id="item3" value="얼굴인식"><label for="item3">얼굴인식</label>
-              <input type="radio" name="item" id="item4" value="지문인식"><label for="item4">지문인식</label>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+          <span class="text-[10px] font-bold text-emerald-400 font-mono">LIVE</span>
+        </div>
+      </div>
+
+      <div class="simulator-body">
+        <!-- 시뮬레이터 디스플레이. stage-N 클래스는 landing.js 가 교체한다. -->
+        <div class="simulator-screen stage-0" data-simscreen>
+
+          <div class="sim-content animate-fade-in" data-simstage="0">
+            <div class="scanner-ring-container">
+              <div class="scanner-ring pulse-slow"></div>
+              <div class="scanner-line"></div>
+            </div>
+            <p class="sim-status-text">회원 접근을 대기 중입니다...</p>
+            <span class="sim-sub-text font-mono">STANDBY MODE | SENSORS READ READY</span>
+          </div>
+
+          <div class="sim-content animate-pulse hidden" data-simstage="1">
+            <div class="face-scan-frame">
+              <div class="face-corner tl"></div>
+              <div class="face-corner tr"></div>
+              <div class="face-corner bl"></div>
+              <div class="face-corner br"></div>
+              <div class="scanner-line scanning"></div>
+            </div>
+            <p class="sim-status-text text-yellow-400">인공지능 안면 분석 중...</p>
+            <span class="sim-sub-text font-mono text-yellow-500/80">AI FEATURE EXTRACTING (0.13s)</span>
+          </div>
+
+          <div class="sim-content animate-scale-up hidden" data-simstage="2">
+            <div class="access-success-box">
+              <svg class="w-12 h-12 text-emerald-400 stroke-[3px]" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+            <p class="sim-status-text text-emerald-400 font-extrabold tracking-tight">ACCESS GRANTED</p>
+            <div class="sim-user-card">
+              <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center font-bold text-emerald-400">
+                김
+              </div>
+              <div class="text-left">
+                <p class="text-sm font-bold text-white">김철수 회원님 (0.32s)</p>
+                <p class="text-[10px] text-gray-400">헬스 프리미엄 이용권 | 남은 기간 45일</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="sim-content animate-fade-in hidden" data-simstage="3">
+            <div class="gate-open-animation">
+              <div class="gate-wing left open"></div>
+              <div class="gate-wing right open"></div>
+              <div class="gate-pass-indicator">PASS</div>
+            </div>
+            <p class="sim-status-text text-blue-400 font-bold">출입문 게이트 개방 완료</p>
+            <span class="sim-sub-text font-mono text-blue-300">WELCOME TO GYM! ENJOY WORKOUT.</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- 시뮬레이터 인디케이터 바 -->
+      <div class="simulator-footer">
+        <div class="step-indicator active" data-simstep="0">
+          <span class="step-num">1</span>
+          <span class="step-label">인식 대기</span>
+        </div>
+        <div class="step-indicator" data-simstep="1">
+          <span class="step-num">2</span>
+          <span class="step-label">안면 스캔</span>
+        </div>
+        <div class="step-indicator" data-simstep="2">
+          <span class="step-num">3</span>
+          <span class="step-label">승인 처리</span>
+        </div>
+        <div class="step-indicator" data-simstep="3">
+          <span class="step-num">4</span>
+          <span class="step-label">출입 개방</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 실물 장비 갤러리 -->
+    <div class="hardware-gallery-card">
+      <div class="gallery-tabs">
+        <button class="gallery-tab-btn active" data-tabgroup="showcase" data-tab="face">
+          0.3초 AI 안면인식기
+        </button>
+        <button class="gallery-tab-btn" data-tabgroup="showcase" data-tab="kiosk">
+          카운터용 Kiosk
+        </button>
+      </div>
+
+      <div class="gallery-content">
+        <div class="gallery-panel animate-fade-in" data-tabgroup="showcase" data-tabpanel="face">
+          <div class="gallery-image-wrapper">
+            <img src="assets/images/chkgym_face_device.png" alt="CheckGym AI 안면인식 스마트 단말기" class="gallery-img">
+            <div class="image-overlay-badge">AI BIOMETRICS (ACTIVE)</div>
+          </div>
+          <div class="gallery-details">
+            <h3 class="gallery-title">0.3초 AI 고성능 안면인식 단말기</h3>
+            <p class="gallery-desc">
+              업계 최고 효율의 딥러닝 페이스 스캔 라이브러리가 장착되어 스탠드나 벽면, 유리문 등 어디에나 손쉽게 부착하여 원격 개폐를 실현합니다.
+            </p>
+            <ul class="gallery-specs">
+              <li><span>• 인식 시간</span> <span>0.3초 이내 (딥엔진 가속)</span></li>
+              <li><span>• 오인식률</span> <span>0.0001% 미만 (금융권 등급)</span></li>
+              <li><span>• 보안 등급</span> <span>IR 적외선 3D 라이브 감지로 대리 출석 방지</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="gallery-panel animate-fade-in hidden" data-tabgroup="showcase" data-tabpanel="kiosk">
+          <div class="gallery-image-wrapper">
+            <img src="assets/images/chkgym_kiosk_device.png?v=3" alt="CheckGym 결제 키오스크" class="gallery-img">
+            <div class="image-overlay-badge">카운터용 KIOSK (ACTIVE)</div>
+          </div>
+          <div class="gallery-details">
+            <h3 class="gallery-title">스마트 미니 키오스크</h3>
+            <p class="gallery-desc">
+              선명한 와이드 스크린으로 회원이 직접 터치하여 회원가입, 신규 결제, 사물함 지정, 일일 입장권 구매를 24시간 직원 없이 정산합니다.
+            </p>
+            <ul class="gallery-specs">
+              <li><span>• 스크린</span> <span>15.6인치 풀HD 정전식 멀티 터치스크린</span></li>
+              <li><span>• 결제수단</span> <span>신용카드, 삼성페이, 앱카드 바코드, 리더기 탑재</span></li>
+              <li><span>• 부가혜택</span> <span>문화비 소득공제 및 복합 과세 분리결제 지원</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="showcase-features-container">
+    <!-- 주요시스템 소개 -->
+    <div class="install-showcase-card mt-8">
+      <h3 class="install-showcase-title">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 block animate-pulse"></span>
+        체크짐 주요시스템 소개
+      </h3>
+      <p class="install-showcase-subtitle">
+        피트니스 센터 운영의 핵심 솔루션을 이루는 주요 하드웨어 및 단말기 시스템을 확인해보세요.
+      </p>
+      <div class="install-tabs">
+        <button class="install-tab-btn active" data-tabgroup="installation" data-tab="kiosk">카운터용 Kiosk</button>
+        <button class="install-tab-btn" data-tabgroup="installation" data-tab="access_kiosk">출석 터치시스템</button>
+        <button class="install-tab-btn" data-tabgroup="installation" data-tab="face_access">얼굴인식 출입</button>
+        <button class="install-tab-btn" data-tabgroup="installation" data-tab="finger_access">지문인식 출입</button>
+      </div>
+
+      <div class="install-panel-content animate-fade-in" data-tabgroup="installation" data-tabpanel="kiosk">
+        <div class="install-media-box">
+          <img src="assets/images/chkgym_kiosk_device.png?v=3" alt="카운터용 Kiosk 소개" class="install-video object-contain bg-black/40">
+          <div class="install-glow-overlay"></div>
+          <div class="install-badge">CORE SYSTEM</div>
+        </div>
+        <div class="install-info-box">
+          <h4 class="install-panel-title">카운터용 Kiosk 소개</h4>
+          <p class="install-panel-desc">
+            안드로이드 기반의 체크짐 전용 결제 키오스크를 통해, 복잡한 프런트 업무를 24시간 자동화된 정산 프로세스를 구축할 수 있습니다.
+          </p>
+          <ul class="install-panel-tips">
+            <li>✦ 안드로이드 기반 체크짐 전용 결제 키오스크</li>
+            <li>✦ 신규회원 등록 및 재등록 회원 결제 지원</li>
+            <li>✦ 수강, 레슨, 락커, 대여, 일일권 결제 지원</li>
+            <li>✦ 결제 기반으로 회원기간 자동 연장 및 자동 관리</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="install-panel-content animate-fade-in hidden" data-tabgroup="installation" data-tabpanel="access_kiosk">
+        <div class="install-media-box">
+          <img src="assets/images/chkgym_touch_device.jpg?v=5" alt="출석·터치시스템" class="install-video object-contain bg-black/40">
+          <div class="install-glow-overlay"></div>
+          <div class="install-badge">CORE SYSTEM</div>
+        </div>
+        <div class="install-info-box">
+          <h4 class="install-panel-title">출석 터치시스템</h4>
+          <p class="install-panel-desc">
+            회원 출석 체크와 레슨 횟수 차감을 동시에 정밀하게 처리하고, 직관적인 소리 안내와 현황판 UI로 회원 상황을 한눈에 파악합니다.
+          </p>
+          <ul class="install-panel-tips">
+            <li>✦ 출석 체크와 레슨 차감을 동시에 진행 가능</li>
+            <li>✦ 각종 회원 상황에 맞는 직관적인 소리 안내 기능</li>
+            <li>✦ 체크인 후 레슨, 수강 등 정보를 한눈에 파악</li>
+            <li>✦ 입실/퇴실 안내 SMS 자동 전송 기능</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="install-panel-content animate-fade-in hidden" data-tabgroup="installation" data-tabpanel="face_access">
+        <div class="install-media-box">
+          <img src="assets/images/chkgym_face_device.png?v=2" alt="얼굴인식 출입 단말기" class="install-video object-contain bg-black/40">
+          <div class="install-glow-overlay"></div>
+          <div class="install-badge">CORE SYSTEM</div>
+        </div>
+        <div class="install-info-box">
+          <h4 class="install-panel-title">얼굴인식 출입</h4>
+          <p class="install-panel-desc">
+            세계 최고의 기술력을 자랑하는 슈프리마(Suprema) 얼굴인식 하드웨어와 체크짐을 100% 연동하여 강력하고 편리한 지능형 보안 출입을 구현합니다.
+          </p>
+          <ul class="install-panel-tips">
+            <li>✦ 세계 최고 수준의 AI 얼굴인식 알고리즘 탑재</li>
+            <li>✦ 체크짐 회원 DB와 실시간 연동되어 입실과 동시에 출석 완료</li>
+            <li>✦ 체크짐 관리자에서 원격 문열기 및 출입 로그 모니터링 제공</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="install-panel-content animate-fade-in hidden" data-tabgroup="installation" data-tabpanel="finger_access">
+        <div class="install-media-box">
+          <img src="assets/images/chkgym_finger_device.jpg?v=2" alt="지문인식 출입 단말기" class="install-video object-contain bg-black/40">
+          <div class="install-glow-overlay"></div>
+          <div class="install-badge">CORE SYSTEM</div>
+        </div>
+        <div class="install-info-box">
+          <h4 class="install-panel-title">지문인식 출입</h4>
+          <p class="install-panel-desc">
+            세계 최고의 기술력을 자랑하는 슈프리마(Suprema) 지문인식 하드웨어와 체크짐을 100% 연동하여 강력하고 편리한 지능형 보안 출입을 구현합니다.
+          </p>
+          <ul class="install-panel-tips">
+            <li>✦ 세계 최고 수준의 AI 지문인식 알고리즘 탑재</li>
+            <li>✦ 체크짐 회원 DB와 실시간 연동되어 입실과 동시에 출석 완료</li>
+            <li>✦ 적외선(IR) 실시간 카메라 탑재로 타인 사진/동영상 도용 원천 차단</li>
+            <li>✦ 체크짐 관리자에서 원격 문열기 및 출입 로그 모니터링 제공</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 주요기능 소개 -->
+    <div class="install-showcase-card mt-8">
+      <h3 class="install-showcase-title">
+        <span class="w-2.5 h-2.5 rounded-full bg-blue-500 block animate-pulse"></span>
+        체크짐 주요기능 소개
+      </h3>
+      <p class="install-showcase-subtitle">
+        피트니스 센터 운영의 디지털 전환을 이끄는 체크짐 소프트웨어만의 독보적인 스마트 기능들입니다.
+      </p>
+      <div class="install-tabs">
+        <button class="install-tab-btn active" data-tabgroup="feature" data-tab="edoc">전자계약서</button>
+        <button class="install-tab-btn" data-tabgroup="feature" data-tab="lesson_reserve">레슨예약</button>
+        <button class="install-tab-btn" data-tabgroup="feature" data-tab="transfer">양수도 기능</button>
+        <button class="install-tab-btn" data-tabgroup="feature" data-tab="report">운영리포트</button>
+        <button class="install-tab-btn" data-tabgroup="feature" data-tab="notification">강력한 알림기반</button>
+        <button class="install-tab-btn" data-tabgroup="feature" data-tab="unpaid_lock">미납·만기 자동제어</button>
+        <button class="install-tab-btn" data-tabgroup="feature" data-tab="auto_sms">자동문자 기능</button>
+      </div>
+
+      <div class="install-panel-content animate-fade-in" data-tabgroup="feature" data-tabpanel="edoc">
+        <div class="install-media-box">
+          <img src="assets/images/chkgym_edoc_device.jpg?v=6" alt="전자계약서" class="install-video object-contain bg-black/40">
+          <div class="install-glow-overlay"></div>
+          <div class="install-badge">SMART FEATURE</div>
+        </div>
+        <div class="install-info-box">
+          <h4 class="install-panel-title">전자계약서</h4>
+          <p class="install-panel-desc">
+            가입신청서와 면책 동의서 등 종이 없는 친환경 비즈니스를 실현하며, 서명 및 촬영과 동시에 회원 정보 및 결제를 자동으로 실시간 연동합니다.
+          </p>
+          <ul class="install-panel-tips">
+            <li>✦ 신규회원 가입 및 재등록도 가입신청서 전자문서로 처리</li>
+            <li>✦ 전자계약서 작성과 동시에 회원, 결제 동시 처리</li>
+            <li>✦ 전자계약서 서명, 회원 사진 촬영도 동시 진행</li>
+            <li>✦ 계약서 저장과 동시에 PDF 생성 및 LMS 전송 기능</li>
+            <li>✦ 다이빙풀 등을 위한 면책 계약서 지원</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="install-panel-content animate-fade-in hidden" data-tabgroup="feature" data-tabpanel="lesson_reserve">
+        <div class="install-media-box">
+          <img src="assets/images/chkgym_lesson_device.jpg?v=3" alt="레슨예약 시스템" class="install-video object-contain bg-black/40">
+          <div class="install-glow-overlay"></div>
+          <div class="install-badge">SMART FEATURE</div>
+        </div>
+        <div class="install-info-box">
+          <h4 class="install-panel-title">레슨예약 시스템</h4>
+          <p class="install-panel-desc">
+            트레이너와 회원 간의 번거로운 수업 조율을 모바일 웹 링크로 즉시 예약하게 지원하여 불필요한 행정 소요를 극적으로 단축합니다.
+          </p>
+          <ul class="install-panel-tips">
+            <li>✦ 복잡한 전용 앱을 설치할 필요 없는 간편 QR 웹 예약 방식</li>
+            <li>✦ 회원이 트레이너별 예약 가능 시간표를 모바일에서 실시간 확인 및 예약</li>
+            <li>✦ 트레이너용 실시간 시간표 및 노쇼(No-Show) 발생 시 간편 터치 차감 기능</li>
+            <li>✦ 수업 일정 확정 및 변경 시 SMS/LMS 자동 알림 전송</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="install-panel-content animate-fade-in hidden" data-tabgroup="feature" data-tabpanel="transfer">
+        <div class="install-media-box">
+          <div class="install-media-placeholder flex-col justify-center items-center p-6 bg-gradient-to-br from-purple-950/40 to-slate-900/60">
+            <svg class="w-16 h-16 text-purple-400 mb-4 animate-pulse" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></svg>
+            <span class="text-sm font-semibold text-purple-200 mb-1">원클릭 양수도 프로세스</span>
+            <span class="text-xs text-gray-400 text-center">복잡한 회원 간 양도·양수 합의와 잔여 기간 이전을 클릭 몇 번으로 투명하게 해결</span>
+          </div>
+          <div class="install-glow-overlay"></div>
+          <div class="install-badge">SMART FEATURE</div>
+        </div>
+        <div class="install-info-box">
+          <h4 class="install-panel-title">원클릭 양수도 기능</h4>
+          <p class="install-panel-desc">
+            피트니스 센터 운영에서 번거롭고 갈등이 잦은 회원권의 양도 및 양수 프로세스를 투명하고 표준화된 디지털 절차로 처리합니다.
+          </p>
+          <ul class="install-panel-tips">
+            <li>✦ 양도인 회원권 선택 후 잔여 기한 및 횟수 자동 산출</li>
+            <li>✦ 양수인으로 원클릭 회원 정보 매핑 및 이전 처리</li>
+            <li>✦ 양도 수수료 자동 결제 프로세스 및 면책 계약서 서명 결합</li>
+            <li>✦ 양수도 완료 즉시 당사자들에게 처리 내역 및 신규 모바일 pass 실시간 자동 전송</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="install-panel-content animate-fade-in hidden" data-tabgroup="feature" data-tabpanel="report">
+        <div class="install-media-box">
+          <img src="assets/images/chkgym_report_device.jpg?v=1" alt="운영리포트 대시보드" class="install-video object-contain bg-black/40">
+          <div class="install-glow-overlay"></div>
+          <div class="install-badge">SMART FEATURE</div>
+        </div>
+        <div class="install-info-box">
+          <h4 class="install-panel-title">운영리포트 (일일/월간/년간)</h4>
+          <p class="install-panel-desc">
+            센터의 일일 정산부터 연간 매출 트렌드까지, 복잡한 스프레드시트 없이 체크짐 대시보드에서 정교하게 가공된 리포트를 즉시 조회합니다.
+          </p>
+          <ul class="install-panel-tips">
+            <li>✦ 방문자 히트맵을 통한 혼잡 요일 및 피크 타임 실시간 통계</li>
+            <li>✦ 수강권, 레슨, 락커, 대여, 일일권 등 항목별 매출 분포율 실시간 비주얼화</li>
+            <li>✦ 재등록율, 만기 임박 대상자 및 미납 상태 통합 뷰어 제공</li>
+            <li>✦ 프런트 업무용 일일 마감 정산 내역 자동 요약 및 엑셀 다운로드</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="install-panel-content animate-fade-in hidden" data-tabgroup="feature" data-tabpanel="notification">
+        <div class="install-media-box">
+          <div class="install-media-placeholder flex-col justify-center items-center p-6 bg-gradient-to-br from-amber-950/40 to-slate-900/60">
+            <svg class="w-16 h-16 text-amber-400 mb-4 animate-pulse" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span class="text-sm font-semibold text-amber-200 mb-1">실시간 자동 알림 기반 시스템</span>
+            <span class="text-xs text-gray-400 text-center">결제 안내, 만기 예정 알림, 출입 시 안심 문자 및 레슨 예약 확정을 자동 SMS/LMS로 전송</span>
+          </div>
+          <div class="install-glow-overlay"></div>
+          <div class="install-badge">SMART FEATURE</div>
+        </div>
+        <div class="install-info-box">
+          <h4 class="install-panel-title">강력한 알림기반 시스템</h4>
+          <p class="install-panel-desc">
+            회원과의 상호작용이 필요한 모든 터치포인트에서 실시간 알림을 발송하여 친밀도를 높이고 미결제나 갱신 누락을 방지합니다.
+          </p>
+          <ul class="install-panel-tips">
+            <li>✦ 입실 및 퇴실 시 보호자용 실시간 안심 문자 자동 발송</li>
+            <li>✦ 회원권 만료 7일 전/3일 전 재등록 자동문자로 안내 기능</li>
+            <li>✦ 신규 결제 및 레슨 횟수 차감 내역을 영수증 형식으로 자동 통보</li>
+            <li>✦ 미납 회원을 위한 상냥한 미납금 납부 요청 링크 원클릭 발송</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="install-panel-content animate-fade-in hidden" data-tabgroup="feature" data-tabpanel="unpaid_lock">
+        <div class="install-media-box">
+          <div class="install-media-placeholder flex-col justify-center items-center p-6 bg-gradient-to-br from-red-950/40 to-slate-900/60">
+            <svg class="w-16 h-16 text-red-400 mb-4 animate-pulse" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+            <span class="text-sm font-semibold text-red-200 mb-1">미납 및 만기 회원 자동 입출입 제어</span>
+            <span class="text-xs text-gray-400 text-center">회원권 만료일이나 미납금이 있는 경우 게이트를 자동 잠금하고 모바일 및 안내 음성으로 신속 결제 유도</span>
+          </div>
+          <div class="install-glow-overlay"></div>
+          <div class="install-badge">SMART FEATURE</div>
+        </div>
+        <div class="install-info-box">
+          <h4 class="install-panel-title">미납·만기 자동제어 (체크짐 제안)</h4>
+          <p class="install-panel-desc">
+            미납금이 존재하거나 기간이 만료된 회원이 입장하려고 할 때 게이트를 자동으로 차단하고 프런트 안내 음성을 송출하여 누수 매출을 완벽히 방어합니다.
+          </p>
+          <ul class="install-panel-tips">
+            <li>✦ 체크짐 회원 상태(미납/만기)를 출입 게이트 차단기와 100% 동기화</li>
+            <li>✦ 미납 회원의 태그 즉시 게이트 자동 제어 및 스피커를 통한 친절한 결제 안내 음성 송출</li>
+            <li>✦ 회원이 모바일 화면이나 카운터 키오스크를 통해 미납금을 즉시 정산할 수 있는 결제 링크 제공</li>
+            <li>✦ 관리자의 번거롭고 껄끄러운 미납금 현장 독촉 업무를 완전히 무인화</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="install-panel-content animate-fade-in hidden" data-tabgroup="feature" data-tabpanel="auto_sms">
+        <div class="install-media-box">
+          <div class="install-media-placeholder flex-col justify-center items-center p-6 bg-gradient-to-br from-teal-950/40 to-slate-900/60">
+            <svg class="w-16 h-16 text-teal-400 mb-4 animate-pulse" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span class="text-sm font-semibold text-teal-200 mb-1">자동문자 알림 시스템</span>
+            <span class="text-xs text-gray-400 text-center">입/퇴실 안심 문자, 결제 통보, 예약 안내 등 총 19종 이상의 개별 맞춤 시나리오 지원</span>
+          </div>
+          <div class="install-glow-overlay"></div>
+          <div class="install-badge">SMART FEATURE</div>
+        </div>
+        <div class="install-info-box">
+          <h4 class="install-panel-title">자동화된 알림을 통한 센터 운영의 연속성 확보</h4>
+          <p class="install-panel-desc">
+            회원의 행동(출입, 결제, 예약 등)에 반응하여 필요한 안내를 자동으로 전달하므로 수작업 소요를 대폭 줄이고 소통을 원활하게 만듭니다.
+          </p>
+          <ul class="install-panel-tips">
+            <li>✦ 입실, 퇴실, 각종 결제 연동알림, 예약알림 등 19개 이상의 다양한 상세 설정</li>
+            <li>✦ 회원 상태값 변화에 맞춘 자동 타겟 발송 기능 탑재</li>
+            <li>✦ SMS/LMS 맞춤 템플릿 제공 및 발송 이력 실시간 대시보드 모니터링</li>
+            <li>✦ 불필요한 스팸성 문자 차단 및 야간 발송 제한 기능 제공</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- 3. V2 Features Spotlight -->
+<section id="features" class="features-section">
+  <div class="section-header">
+    <h2 class="section-title">비교할 수 없는 체크짐 V2 독보적 기술력</h2>
+    <p class="section-desc">오직 체크짐에서만 누릴 수 있는 고품격 소프트웨어와 하드웨어의 결합으로 피트니스 공간을 자동화하세요.</p>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon-wrapper">
+        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="16" x="4" y="4" rx="2"/><rect width="6" height="6" x="9" y="9" rx="1"/><path d="M15 2v2"/><path d="M15 20v2"/><path d="M2 15h2"/><path d="M2 9h2"/><path d="M20 15h2"/><path d="M20 9h2"/><path d="M9 2v2"/><path d="M9 20v2"/></svg>
+      </div>
+      <h3 class="feature-card-title">0.3초 초고속 얼굴 인식</h3>
+      <p class="feature-card-desc">업계 최고 사양의 AI 생체 인식 엔진 탑재로 회원이 서기만 해도 0.3초 만에 출석 및 게이트 연동 처리가 완료됩니다.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon-wrapper">
+        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+      </div>
+      <h3 class="feature-card-title">다중 사진 &amp; 동영상 완벽 방지</h3>
+      <p class="feature-card-desc">실시간 적외선(IR) 센서 연동을 통해 모바일 사진이나 인쇄된 동영상 얼굴 인증을 차단하여 타인 입장을 철저히 봉쇄합니다.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon-wrapper">
+        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="m6.08 9.5-3.5 1.6a1 1 0 0 0 0 1.81l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59"/><path d="m6.08 14.5-3.5 1.6a1 1 0 0 0 0 1.81l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9a1 1 0 0 0 0-1.83l-3.5-1.59"/></svg>
+      </div>
+      <h3 class="feature-card-title">문화비 소득공제 분리 결제</h3>
+      <p class="feature-card-desc">국내 유일! PG 결제 단계에서 도서/공연비 등 소득공제용 문화를 자동 분산하여 점주와 회원 모두에게 결제 혜택과 절세를 선사합니다.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon-wrapper">
+        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+      </div>
+      <h3 class="feature-card-title">앱 설치 없는 모바일 QR 레슨예약</h3>
+      <p class="feature-card-desc">귀찮은 전용앱 설치 권유는 이제 그만! 회원은 무료 예약 QR 링크로 즉시 예약하고, 점주는 노쇼 자동 차감과 일괄 정산을 터치 한 번으로 처리합니다.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon-wrapper">
+        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+      </div>
+      <h3 class="feature-card-title">무제한 무료 전자계약서 지원</h3>
+      <p class="feature-card-desc">더 이상 지저분한 종이 계약서를 보관 및 분쇄할 필요가 없습니다. 법적 효력이 100% 동일한 전자계약서와 친필 서명 시스템을 평생 무제한 무료 제공합니다.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon-wrapper">
+        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m11 17 2 2a1 1 0 1 0 3-3"/><path d="m14 14 2.5 2.5a1 1 0 1 0 3-3l-3.88-3.88a3 3 0 0 0-4.24 0l-.88.88a1 1 0 1 1-3-3l2.81-2.81a5.79 5.79 0 0 1 7.06-.87l.47.28a2 2 0 0 0 1.42.25L21 4"/><path d="m21 3 1 11h-2"/><path d="M3 3 2 14l6.5 6.5a1 1 0 1 0 3-3"/><path d="M3 4h8"/></svg>
+      </div>
+      <h3 class="feature-card-title">Suprema X LG 콜라보</h3>
+      <p class="feature-card-desc">국내 최고 물리 보안 기업 슈프리마와 글로벌 LG전자의 최고 사양 하드웨어 및 키오스크를 사용하여, 고장률 제로의 스마트 시스템을 완성합니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Brand Partnership Line -->
+<section class="partnership-section">
+  <div class="partnership-container">
+    <p class="partnership-title">CheckGym V2 Official Technology Partners</p>
+    <div class="partnership-logos">
+      <div class="partner-logo">SUPREMA (슈프리마)</div>
+      <div class="partner-logo">LG ELECTRONICS (LG전자)</div>
+      <div class="partner-logo">KIS정보통신</div>
+      <div class="partner-logo">MIZE</div>
+    </div>
+    <p class="partnership-sub text-center text-xs text-gray-500 mt-4">
+      국내 최정상급 보안, 결제 및 디바이스 선도 기업들과의 기술 협업으로 검증된 무결점 솔루션을 보장합니다.
+    </p>
+  </div>
+</section>
+
+<!-- Infinite Rolling Club Logos -->
+<!--
+  3단 마퀴. 레거시 home_old/js/index.js 의 Swiper 3-loop(mytype one/cg2/cg3)를 옮긴 것.
+  로고는 landing.js 의 initClubLogos 가 procHome.php?actmode=rollingimg 로 DB(comlogo,
+  explogo_home='Y')에서 동적으로 받아 mytype 별 row 에 채운다(AdAdm 노출관리 반영, 늘 최신).
+
+  아래 하드코딩 $partner_logos 는 fallback 이다: procHome fetch 가 실패(네트워크/DB 장애)해도
+  마퀴가 비지 않도록 첫 row 에 정적 로고를 미리 렌더해 둔다. fetch 가 성공하면 landing.js 가
+  data-marquee-track 내용을 통째로 교체한다.
+
+  각 row(track)는 무한 순환 이음매를 위해 콘텐츠를 2벌 복제하고 -50% 로 이동한다.
+  방향은 레거시처럼 교차한다(row 2 만 역방향).
+-->
+<section class="marquee-section" data-club-logos data-rollingimg-url="assets/landing/rollingimg.json">
+  <div class="marquee-wrapper">
+    <div class="marquee-container">
+      <div class="marquee-content"
+           data-marquee-row="one">
+        <div class="marquee-group" data-marquee-track>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/149387889753940.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/149189279244646.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/160319389747883.jpeg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/149308898338033.png" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/153435593405957.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/151382949478563.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/154451379256866.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/150822443752987.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/151237798082991.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/153275627012775.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/157873345231874.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/152474761414007.png" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/152236027076244.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/152782544400908.png" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/158751880224013.png" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/153448580346658.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+        </div>
+        <div class="marquee-group" data-marquee-track>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/149387889753940.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/149189279244646.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/160319389747883.jpeg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/149308898338033.png" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/153435593405957.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/151382949478563.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/154451379256866.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/150822443752987.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/151237798082991.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/153275627012775.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/157873345231874.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/152474761414007.png" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/152236027076244.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/152782544400908.png" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/158751880224013.png" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+          <div class="marquee-logo-wrapper">
+            <img src="assets/images/logos/153448580346658.jpg" alt="가맹점 로고" class="marquee-logo-img" decoding="async" referrerpolicy="no-referrer">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="marquee-container">
+      <div class="marquee-content marquee-reverse"
+           data-marquee-row="cg2">
+        <div class="marquee-group" data-marquee-track>
+        </div>
+        <div class="marquee-group" data-marquee-track>
+        </div>
+      </div>
+    </div>
+    <div class="marquee-container">
+      <div class="marquee-content"
+           data-marquee-row="cg3">
+        <div class="marquee-group" data-marquee-track>
+        </div>
+        <div class="marquee-group" data-marquee-track>
+        </div>
+      </div>
+    </div>
+    <p class="marquee-desc text-center text-xs text-gray-600 mt-3">
+      전국 수많은 프리미엄 센터가 체크짐 솔루션을 통해 혁신적인 지능형 공간 관리를 누리고 있습니다.
+    </p>
+  </div>
+</section>
+<!-- 4. Interactive Pricing & Estimator Widget -->
+<section id="pricing" class="pricing-section">
+  <div class="pricing-container">
+    <div class="section-header">
+      <h2 class="section-title">스마트 견적 계산기</h2>
+      <p class="section-desc">센터의 운영 상황에 꼭 맞는 요금 조건과 디바이스를 결합해 보세요. 사은 개월 수와 무료 배송 혜택이 실시간 반영됩니다.</p>
+    </div>
+
+    <div class="estimator-box">
+      <!-- 좌측: 컨트롤러 -->
+      <div class="estimator-controls">
+
+        <!-- 프로그램 선납 옵션 -->
+        <div class="control-group">
+          <span class="control-label">
+            <svg class="w-5 h-5 text-emerald-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+            1. 피트니스 SaaS 프로그램 이용 요금
+          </span>
+          <div class="option-cards">
+            <div class="option-card" data-period="monthly">
+              <div class="option-card-title">매월 정기결제 (월납)</div>
+              <div class="option-card-price">30,000원</div>
+            </div>
+
+            <div class="option-card selected" data-period="yearly">
+              <span class="badge-benefit">+2개월 증정</span>
+              <div class="option-card-title">1년 일시불 (선납)</div>
+              <div class="option-card-price">240,000원</div>
+            </div>
+
+            <div class="option-card" data-period="two_years">
+              <span class="badge-benefit green">+2개월 증정</span>
+              <div class="option-card-title">2년 일시불 (선납)</div>
+              <div class="option-card-price">380,000원</div>
             </div>
           </div>
         </div>
-        <div class="input-group">
-          <div class="input-wrapper full"><div class="input-title"><h5>문의사항</h5></div><textarea id="f-msg" placeholder="현재 사용 중인 프로그램, 회원 수, 희망 설치 시기 등을 남겨주시면 더 자세한 상담이 가능합니다."></textarea></div>
+
+        <!-- 하드웨어 수량 선택기 -->
+        <div class="control-group">
+          <span class="control-label">
+            <svg class="w-5 h-5 text-emerald-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+            2. 현장 구축형 하드웨어 솔루션 선택 (선택 항목)
+          </span>
+
+          <div class="hardware-selectors">
+            <!-- 터치탭 -->
+            <div class="hw-row">
+              <div class="hw-info">
+                <span class="hw-name">터치 출석 입력용 탭 (15.6인치)</span>
+                <span class="hw-price">500,000원</span>
+              </div>
+              <div class="hw-qty-controls">
+                <button type="button" class="btn-qty" data-qty-dec="general_touch" aria-label="터치 출석 입력용 탭 수량 감소" disabled><svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                <span class="qty-val" data-qty-value="general_touch">0</span>
+                <button type="button" class="btn-qty" data-qty-inc="general_touch" aria-label="터치 출석 입력용 탭 수량 증가"><svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+
+            <!-- 카운터 키오스크 -->
+            <div class="hw-row">
+              <div class="hw-info">
+                <span class="hw-name">카운터용 결제 키오스크 (15.6인치)</span>
+                <span class="hw-price">540,000원 (테이블 탑 타입)</span>
+              </div>
+              <div class="hw-qty-controls">
+                <button type="button" class="btn-qty" data-qty-dec="general_kiosk" aria-label="카운터용 결제 키오스크 수량 감소" disabled><svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                <span class="qty-val" data-qty-value="general_kiosk">0</span>
+                <button type="button" class="btn-qty" data-qty-inc="general_kiosk" aria-label="카운터용 결제 키오스크 수량 증가"><svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+
+            <!-- 결제 키오스크 (settings 키는 기존 premium_kiosk 재사용) -->
+            <div class="hw-row">
+              <div class="hw-info">
+                <span class="hw-name">결제 키오스크 (21.5인치)</span>
+                <span class="hw-price">780,000원 (테이블 탑 또는 스탠드 가능)</span>
+              </div>
+              <div class="hw-qty-controls">
+                <button type="button" class="btn-qty" data-qty-dec="premium_kiosk" aria-label="결제 키오스크 수량 감소" disabled><svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                <span class="qty-val" data-qty-value="premium_kiosk">0</span>
+                <button type="button" class="btn-qty" data-qty-inc="premium_kiosk" aria-label="결제 키오스크 수량 증가"><svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+
+            <!-- 일반 안면인식 (원본 라벨은 '지문인식 출입통제') -->
+            <div class="hw-row">
+              <div class="hw-info">
+                <span class="hw-name">지문인식 출입통제</span>
+                <span class="hw-price">1,200,000원 (지문 일체형)</span>
+              </div>
+              <div class="hw-qty-controls">
+                <button type="button" class="btn-qty" data-qty-dec="general_face" aria-label="지문인식 출입통제 수량 감소" disabled><svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                <span class="qty-val" data-qty-value="general_face">0</span>
+                <button type="button" class="btn-qty" data-qty-inc="general_face" aria-label="지문인식 출입통제 수량 증가"><svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+
+            <!-- 프리미엄 안면인식 -->
+            <div class="hw-row">
+              <div class="hw-info">
+                <span class="hw-name">얼굴인식 출입통제 (프리미엄 럭셔리)</span>
+                <span class="hw-price">2,500,000원</span>
+              </div>
+              <div class="hw-qty-controls">
+                <button type="button" class="btn-qty" data-qty-dec="premium_face" aria-label="얼굴인식 출입통제 수량 감소" disabled><svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+                <span class="qty-val" data-qty-value="premium_face">0</span>
+                <button type="button" class="btn-qty" data-qty-inc="premium_face" aria-label="얼굴인식 출입통제 수량 증가"><svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg></button>
+              </div>
+            </div>
+          </div>
         </div>
-        <button class="a9-submit" type="submit">상담 신청하기</button>
-        <p class="form-msg" id="formMsg" aria-live="polite"></p>
-      </form>
+
+      </div>
+
+      <!-- 우측: 계산된 리포트 -->
+      <div class="estimator-result">
+        <div>
+          <div class="result-header">
+            <span class="result-tag">CheckGym Solution Estimate</span>
+            <h3 class="result-title">실시간 종합 혜택 제안서</h3>
+          </div>
+
+          <div class="result-breakdown">
+            <div class="breakdown-row">
+              <span>체크짐 이용료</span>
+              <span><span data-result="programPrice">240,000</span>원</span>
+            </div>
+
+            <!-- 원본은 hwPrice > 0 일 때만 렌더 — 초기 수량 0 이므로 hidden -->
+            <div class="breakdown-row hidden" data-result-row="hwPrice">
+              <span>하드웨어 솔루션 총액</span>
+              <span><span data-result="hwPrice">0</span>원</span>
+            </div>
+
+            <!-- 원본은 bonusMonths > 0 일 때만 렌더 — 초기 보너스 0 이므로 hidden -->
+            <div class="breakdown-row bonus hidden" data-result-row="bonusMonths">
+              <span>🎁 조합 보너스 연장 혜택</span>
+              <span>+<span data-result="bonusMonths">0</span>개월 추가 서비스 증정!</span>
+            </div>
+
+            <div class="breakdown-row total">
+              <span>최종 납부액 (VAT 별도)</span>
+              <span><span data-result="finalPrice">240,000</span>원</span>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="final-amount-box">
+            <span class="final-label">프로그램 이용 기준 월 단가</span>
+            <div class="final-price">
+              월 <span data-result="monthlyAverage">17,143</span>원
+            </div>
+            <span class="final-vat">(부가세 별도)</span>
+          </div>
+
+          <!-- 원본은 general_face/premium_face 수량 > 0 일 때만 렌더 — 초기 hidden -->
+          <p class="text-xs text-amber-400 text-center mt-3 mb-1 hidden" data-result-row="installNotice">
+            ⚠️ 얼굴인식/지문인식 장비는 설치비 및 지방출장비가 별도 추가될 수 있습니다.
+          </p>
+
+          <!-- 결제키오스크(premium_kiosk) 수량 > 0 일 때만 렌더 — 초기 hidden -->
+          <p class="text-xs text-amber-400 text-center mt-3 mb-1 hidden" data-result-row="standNotice">
+            ⚠️ 스탠드는 별도 추가 금액이 있습니다.
+          </p>
+
+          <!-- 무료 배송 혜택 상태. 화면 표시는 없고 landing.js 가 상담 폼 전달용으로 읽는다. -->
+          <span class="hidden" data-result="freeDelivery">false</span>
+
+          <a class="btn-primary btn-apply-direct" href="#consult" data-navlink="consult">
+            위 조건으로 상담 및 가입 신청하기
+          </a>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
+<!-- 5. Modern Consult & Apply Form -->
+<section id="consult" class="consult-section">
+  <div class="section-header">
+    <h2 class="section-title">가입 상담 및 도입 신청</h2>
+    <p class="section-desc">간단한 정보만 남겨 주시면, 체크짐 V2 전담 설치 컨설턴트가 신속히 도입 안내를 진행해 드리겠습니다.</p>
+  </div>
 
-<!-- ===== Floating ===== -->
-<div class="floating">
-  <div class="floating-wrapper">
-    <div class="floating-title">
-      <div class="f-tel"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.9 2z"/></svg></div>
-      <div class="ft-text"><p>체크짐 V2 도입 무료상담</p><a href="tel:010-9209-0448">010-9209-0448</a></div>
-    </div>
-    <form class="f-form" id="quickForm">
-      <label for="q-name" class="sr">성함</label><input class="inputbox" id="q-name" type="text" placeholder="성함" required>
-      <label for="q-phone" class="sr">연락처</label><input class="inputbox" id="q-phone" type="tel" placeholder="연락처" required>
-      <label for="q-item" class="sr">관심 항목</label>
-      <select class="selectbox" id="q-item"><option value="">관심 항목</option><option>프로그램만</option><option>카운터 키오스크</option><option>얼굴인식 출입</option><option>지문인식 출입</option><option>전체 구축</option></select>
-      <button type="submit">상담신청하기</button>
-      <label><input type="checkbox" id="q-agree" required>개인정보 수집·이용 동의</label>
+  <div class="consult-form-card">
+    <form id="consult-form" method="post" action="https://onerm.net/home/proc/procConsult.php" novalidate>
+
+      <!--
+        견적 계산기(sec_pricing.php) 연동용 hidden.
+        landing.js 가 견적 상태를 여기에 반영한다. JS 가 없으면 초기값
+        (selected_plan=yearly, total_price=0, 수량 0)이 그대로 전송된다 —
+        procConsult.php 는 셋 다 검증하지 않으므로 제출은 정상 진행된다.
+      -->
+      <input type="hidden" id="f_selected_plan" name="selected_plan" value="yearly">
+      <input type="hidden" id="f_total_price" name="total_price" value="0">
+      <input type="hidden" id="f_hw_general_face" name="hw_general_face" value="0">
+      <input type="hidden" id="f_hw_general_kiosk" name="hw_general_kiosk" value="0">
+      <input type="hidden" id="f_hw_general_touch" name="hw_general_touch" value="0">
+      <input type="hidden" id="f_hw_premium_face" name="hw_premium_face" value="0">
+      <input type="hidden" id="f_hw_premium_kiosk" name="hw_premium_kiosk" value="0">
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="f_requested_id">아이디 *</label>
+          <!--
+            중복 확인 버튼은 proc/procCheckId.php 를 거쳐 v2 의
+            POST /api/consults/check_id 를 호출한다. 판정은 manager.mgid 와
+            미거절 신청서(consult_requests.requested_id) 양쪽을 본다.
+            버튼 자체는 landing.js(initIdCheck)가 붙인다 — JS 가 죽으면 확인은
+            불가하지만, 접수 시 v2 가 동일 규칙으로 거부하므로 중복은 생기지 않는다.
+          -->
+          <div class="input-with-btn">
+            <div class="input-icon-wrapper" style="flex:1">
+              <svg class="input-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <input type="text" id="f_requested_id" name="requested_id" class="form-input" placeholder="영문과 숫자 4자 이상" required autocomplete="username">
+            </div>
+            <button type="button" class="btn-zipcode" id="btn-id-check">중복 확인</button>
+          </div>
+          <p class="field-error hidden" data-error-for="requested_id"></p>
+          <p class="id-check-result hidden" id="id-check-result" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="f_requested_pwd">비밀번호 *</label>
+          <div class="input-icon-wrapper">
+            <svg class="input-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input type="password" id="f_requested_pwd" name="requested_pwd" class="form-input" placeholder="비밀번호 4자 이상" required autocomplete="new-password">
+          </div>
+          <p class="field-error hidden" data-error-for="requested_pwd"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="f_requested_pwd_re">비밀번호 확인 *</label>
+          <div class="input-icon-wrapper">
+            <svg class="input-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input type="password" id="f_requested_pwd_re" name="requested_pwd_re" class="form-input" placeholder="비밀번호 다시 입력" required autocomplete="new-password">
+          </div>
+          <p class="field-error hidden" data-error-for="requested_pwd_re"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="f_contact_name">담당자 이름 *</label>
+          <div class="input-icon-wrapper">
+            <svg class="input-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input type="text" id="f_contact_name" name="contact_name" class="form-input" placeholder="성함을 입력해 주세요" required autocomplete="name">
+          </div>
+          <p class="field-error hidden" data-error-for="contact_name"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="f_contact_phone">휴대폰 *</label>
+          <div class="input-icon-wrapper">
+            <svg class="input-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <input type="tel" id="f_contact_phone" name="contact_phone" class="form-input" placeholder="예: 010-1234-5678" required autocomplete="tel">
+          </div>
+          <p class="field-error hidden" data-error-for="contact_phone"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="f_email">E-mail *</label>
+          <div class="input-icon-wrapper">
+            <svg class="input-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input type="email" id="f_email" name="email" class="form-input" placeholder="예: test@onerm.net" required autocomplete="email">
+          </div>
+          <p class="field-error hidden" data-error-for="email"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="f_center_name">클럽명 *</label>
+          <div class="input-icon-wrapper">
+            <svg class="input-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>
+            <input type="text" id="f_center_name" name="center_name" class="form-input" placeholder="예: 체크짐 연수점" required autocomplete="organization">
+          </div>
+          <p class="field-error hidden" data-error-for="center_name"></p>
+        </div>
+
+        <!-- 사업자등록번호는 이 폼의 유일한 선택 항목 — 라벨에 * 없고 required 도 없다.
+             procConsult.php 도 이 필드만 검증하지 않는다. -->
+        <div class="form-group">
+          <label for="f_business_registration_number">사업자등록번호</label>
+          <div class="input-icon-wrapper">
+            <svg class="input-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>
+            <input type="text" id="f_business_registration_number" name="business_registration_number" class="form-input" placeholder="사업자등록번호 입력" autocomplete="off">
+          </div>
+          <p class="field-error hidden" data-error-for="business_registration_number"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="f_ceo_name">대표자명 *</label>
+          <div class="input-icon-wrapper">
+            <svg class="input-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <input type="text" id="f_ceo_name" name="ceo_name" class="form-input" placeholder="대표자명을 입력하세요" required autocomplete="off">
+          </div>
+          <p class="field-error hidden" data-error-for="ceo_name"></p>
+        </div>
+
+        <div class="form-group">
+          <label for="f_telephone">전화번호 *</label>
+          <div class="input-icon-wrapper">
+            <svg class="input-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <input type="tel" id="f_telephone" name="telephone" class="form-input" placeholder="전화번호를 입력하세요" required autocomplete="tel">
+          </div>
+          <p class="field-error hidden" data-error-for="telephone"></p>
+        </div>
+
+        <!--
+          원본은 zipcode/address 에 readOnly 를 건다(주소 검색으로만 채움).
+          여기서도 유지한다. 주소는 필수 항목이지만, readonly 입력은 브라우저
+          기본 required 검사 대상이 아니므로 required 속성을 걸지 않는다 —
+          필수 강제는 landing.js 의 validateForm 과 procConsult.php 가 담당한다.
+          주소 검색은 JS(다음 우편번호 API)에 의존하고, 로드 실패 시
+          initAddressSearch 가 readonly 를 풀어 직접 입력할 수 있게 한다.
+        -->
+        <div class="form-group">
+          <label for="f_zipcode">설치 주소지 (우편번호) *</label>
+          <div class="input-with-btn">
+            <input type="text" id="f_zipcode" name="zipcode" class="form-input" placeholder="우편번호" readonly autocomplete="postal-code">
+            <button type="button" class="btn-zipcode" id="btn-address-search">주소 찾기</button>
+          </div>
+          <p class="field-error hidden" data-error-for="zipcode"></p>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="f_address">도로명 / 지번 주소 *</label>
+          <input type="text" id="f_address" name="address" class="form-input" placeholder="주소 찾기를 통해 주소를 입력해 주세요" readonly autocomplete="street-address">
+          <p class="field-error hidden" data-error-for="address"></p>
+        </div>
+
+        <div class="form-group full-width">
+          <label for="f_address_detail">상세 주소 (층수, 호수 등 구체적 주소) *</label>
+          <input type="text" id="f_address_detail" name="address_detail" class="form-input" placeholder="상세 호실 및 층 정보를 기재해 주세요" required autocomplete="off">
+          <p class="field-error hidden" data-error-for="address_detail"></p>
+        </div>
+      </div>
+
+      <!-- 이용 약관 및 개인정보 동의 영역 -->
+      <div class="agreement-section">
+
+        <!-- 전체 동의 (UI 편의 기능 — name 없음, 서버로 전송되지 않는다) -->
+        <div class="agreement-accordion agreement-all">
+          <div class="agreement-header">
+            <label class="checkbox-wrapper" for="f_agree_all">
+              <input type="checkbox" id="f_agree_all" class="chk-native">
+              <span class="custom-chk" aria-hidden="true">
+                <svg class="chk-icon w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+              <span class="agreement-title agreement-title-all">체크짐 이용약관, 개인정보처리방침에 모두 동의함</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 이용약관 동의 (필수) -->
+        <div class="agreement-accordion">
+          <div class="agreement-header">
+            <label class="checkbox-wrapper" for="f_agree_terms">
+              <!--
+                체크 안 하면 체크박스는 전송되지 않는다. procConsult.php:82 는
+                post_val('agree_terms') !== '1' 로 검사하므로 미전송도 '' 로 걸러져
+                올바르게 거부되지만, 짝 hidden 을 앞에 두어 항상 '0' 이 오도록 한다.
+                HTML 폼은 문서 순서대로 전송하고 PHP 는 같은 키를 뒤 값으로 덮어쓰므로,
+                체크 시에는 checkbox 의 '1' 이 hidden 의 '0' 을 이긴다.
+                JS 없이 제출돼도 서버가 받는 값이 명확해진다.
+              -->
+              <input type="hidden" name="agree_terms" value="0">
+              <input type="checkbox" id="f_agree_terms" name="agree_terms" value="1" class="chk-native" required>
+              <span class="custom-chk" aria-hidden="true">
+                <svg class="chk-icon w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+              <span class="agreement-title">체크짐 이용약관 동의 (필수)</span>
+            </label>
+            <button type="button" class="agreement-expand" data-agreement-toggle="terms" aria-expanded="false" aria-controls="agreement-panel-terms" aria-label="체크짐 이용약관 전문 펼치기">
+              <svg class="faq-arrow w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+          </div>
+
+          <!-- 약관 전문: v2 Index.tsx:1647-1658 원문 그대로. 요약/수정 금지. -->
+          <div class="agreement-content hidden" id="agreement-panel-terms" data-agreement-panel="terms">
+            <strong>제1장 총칙</strong><br><br>
+            <strong>제1조 (목적)</strong><br>
+            이 약관은 원알엠소프트(이하 &ldquo;회사&rdquo;)가 온라인으로 제공하는 체크짐 회원관리서비스 및 이에 부수된 제반 서비스(이하 &ldquo;서비스&rdquo;)의 이용과 관련하여 회사와 회원 간의 권리, 의무 및 책임사항, 기타 필요한 사항을 규정함을 목적으로 합니다.<br><br>
+            <strong>제2조 (용어의 정의)</strong><br>
+            ① 이 약관에서 사용하는 정의는 다음과 같습니다.<br>
+            1. &ldquo;회사&rdquo;라 함은 온라인을 통하여 체크짐 서비스를 제공하는 사업자를 의미합니다.<br>
+            2. &ldquo;회원&rdquo;이라 함은 본 약관에 동의하고 체크짐 서비스 이용 자격을 부여받은 자를 의미합니다.<br>
+            3. &ldquo;서비스&rdquo;라 함은 회사가 회원에게 온라인으로 제공하는 체크짐 서비스 및 이에 부수된 제반 서비스를 의미합니다.<br>
+            4. &ldquo;계정(ID)&rdquo;이라 함은 회원의 식별과 서비스 이용을 위하여 회원이 사용하는 아이디 입니다.<br>
+            5. &ldquo;계정정보&ldquo;라 함은 회원의 계정, 비밀번호, 성명 등 회원이 회사에 제공한 일반정보 및 서비스이용정보, 이용요금 결제상태 등 생성정보를 통칭합니다.
+          </div>
+
+          <p class="field-error hidden" data-error-for="agree_terms"></p>
+        </div>
+
+        <!-- 개인정보 처리방침 동의 (필수) -->
+        <div class="agreement-accordion">
+          <div class="agreement-header">
+            <label class="checkbox-wrapper" for="f_agree_privacy">
+              <input type="hidden" name="agree_privacy" value="0">
+              <input type="checkbox" id="f_agree_privacy" name="agree_privacy" value="1" class="chk-native" required>
+              <span class="custom-chk" aria-hidden="true">
+                <svg class="chk-icon w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              </span>
+              <span class="agreement-title">개인정보 처리방침 동의 (필수)</span>
+            </label>
+            <button type="button" class="agreement-expand" data-agreement-toggle="privacy" aria-expanded="false" aria-controls="agreement-panel-privacy" aria-label="개인정보 처리방침 전문 펼치기">
+              <svg class="faq-arrow w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+            </button>
+          </div>
+
+          <!-- 처리방침 전문: v2 Index.tsx:1683-1690 원문 그대로. 요약/수정 금지. -->
+          <div class="agreement-content hidden" id="agreement-panel-privacy" data-agreement-panel="privacy">
+            <strong>원알엠스포츠는 이용자들의 개인정보를 소중히 다루고 있습니다.</strong><br><br>
+            원알엠스포츠(이하, &quot;회사&quot; 또는 &quot;웍스&quot;라 함)는 정보통신망 이용촉진 및 정보보호 등에 관한 법률, 개인정보보호법, 통신비밀보호법, 전기통신사업법 등 정보통신서비스제공자가 준수하여야 할 관련 법령상의 개인정보보호 규정을 준수하며, 관련 법령에 의거한 개인정보처리방침을 정하여 이용자 권익 보호에 최선을 다하고 있습니다.<br><br>
+            <strong>1. 수집하는 개인정보 항목 및 수집방법</strong><br>
+            가. 수집하는 개인정보의 항목<br>
+            회사는 회원가입, 원활한 고객상담, 서비스 제공을 위해 아래와 같은 최소한의 개인정보를 필수항목으로 수집하고 있습니다.<br>
+            - 필수항목 : 성명, 비밀번호, 아이디, 이메일, 휴대폰 번호<br>
+            또한 서비스 이용과정이나 사업처리 과정에서 아래와 같은 정보들이 자동으로 생성되어 수집될 수 있습니다.<br>
+            - IP Address, 쿠키, 방문 일시, 서비스 이용 기록, 불량 이용 기록 등
+          </div>
+
+          <p class="field-error hidden" data-error-for="agree_privacy"></p>
+        </div>
+
+      </div>
+
+      <!--
+        전체 결과 메시지(성공/서버오류). landing.js 가 문구와 상태 클래스를 채운다.
+        role="status" + aria-live 로 스크린리더에도 결과가 전달된다.
+      -->
+      <p id="consult-message" class="consult-message hidden" role="status" aria-live="polite"></p>
+
+      <button type="submit" id="consult-submit" class="btn-primary btn-consult-submit">
+        체크짐 V2 무료 가입 및 상담 신청 접수하기
+      </button>
     </form>
   </div>
-</div>
-<button class="topBtn" id="topBtn" aria-label="맨 위로">TOP</button>
-
-<!-- ===== Footer ===== -->
-<footer>
-  <img class="logo-f" src="assets/img/logo.png" alt="CheckGym">
-  <div class="f-info">
-    <p>회사명 원알엠스포츠 <span>│</span> 대표 박경준 <span>│</span> 고객센터 010-9209-0448 <span>│</span> 팩스 0504-433-9844 <span>│</span> onermsports@naver.com</p>
-    <p>인천시 연수구 컨벤시아대로 165 포스코타워 26층</p>
-    <p class="copy">ⓒ 2026 원알엠스포츠. All rights reserved. Powered by CheckGym Core.</p>
+</section>
+<!-- 6. FAQ Accordion List -->
+<section id="faq" class="faq-section">
+  <div class="section-header">
+    <h2 class="section-title">자주 묻는 질문</h2>
+    <p class="section-desc">도입 전 피트니스 점주님들께서 가장 많이 문의해주시는 궁금증을 신속하고 정확하게 알려 드립니다.</p>
   </div>
-  <div class="f-links"><a href="https://onerm.net/mng">체크짐 실행</a><a href="#contact">도입문의</a></div>
+
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-question-box" data-faq-toggle="0" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-panel-0">
+        <div class="faq-q-txt">
+          <svg class="faq-q-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          타프로그램들은 기능 추가시 이용료가 다른던데 체크짐은 어떤가요?        </div>
+        <svg class="faq-arrow w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="faq-answer-box hidden" id="faq-panel-0" data-faq-panel="0">
+        저희 체크짐은 기능 추가시 이용료 추가가 없는 , 유일한 회원관리프로그램입니다.기본이용료에 모든 기능들 이용하시면 됩니다.단, 시스템 및 설치비 ,  하드웨어쪽 구매는 비용이 발생합니다.      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question-box" data-faq-toggle="1" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-panel-1">
+        <div class="faq-q-txt">
+          <svg class="faq-q-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          카운터용 키오스크를 사용하면 문화비소득공제는 어떻게 되는건가요?        </div>
+        <svg class="faq-arrow w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="faq-answer-box hidden" id="faq-panel-1" data-faq-panel="1">
+        체크짐 카운터용 키오스크는 불필요한 카드단말기 추가 없이 , 키오스크 한대에서 문화비소득공제 자동분리결제가 가능합니다.현재 카드단말기 사용센터에서 저희 카운터용 키오스크 신청 시 , 필요서류도 간단합니다.신청하셔서 쉽고 편한 회원권 결제 누리세요.      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question-box" data-faq-toggle="2" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-panel-2">
+        <div class="faq-q-txt">
+          <svg class="faq-q-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          계약 기간이 끝나면 기기를 반납해야 하나요?        </div>
+        <svg class="faq-arrow w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="faq-answer-box hidden" id="faq-panel-2" data-faq-panel="2">
+        아닙니다. 하드웨어 솔루션은 렌탈 형태가 아니라 고객님 소유의 일시불 구매 장비이므로, 프로그램 이용료 계약이 끝나도 장비는 계속 보유하시게 됩니다.      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question-box" data-faq-toggle="3" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-panel-3">
+        <div class="faq-q-txt">
+          <svg class="faq-q-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          안드로이드탭이 있는경우 터치시스템 주문없이 이용료만 납부 하면 되나요?        </div>
+        <svg class="faq-arrow w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="faq-answer-box hidden" id="faq-panel-3" data-faq-panel="3">
+        네. 그렇습니다  , 저희 체크짐은 모든 안드로이드탭에서 출석체크가 가능합니다. 다만 , 저희 터치시스템은 15.6인치 넓은 와이드 화면으로 , 회원들이 스스로의 기간 등을 쉽게 알수 있어 , 재등록에 유리합니다 ^^ 베젤이 얇아 센터 인테리어 효과도 뛰어납니다~      </div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question-box" data-faq-toggle="4" role="button" tabindex="0" aria-expanded="false" aria-controls="faq-panel-4">
+        <div class="faq-q-txt">
+          <svg class="faq-q-icon w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+          타프로그램 사용하고 있는데 체크짐 신청하면 기존 정보들은 옮겨지나요?        </div>
+        <svg class="faq-arrow w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="faq-answer-box hidden" id="faq-panel-4" data-faq-panel="4">
+        네. 타프로그램에서 엑셀로 뽑아지는 모든정보는 무료로 옮겨드립니다.      </div>
+    </div>
+  </div>
+</section>
+<!-- 7. Footer Section -->
+<footer class="landing-footer">
+  <div class="footer-container">
+    <div class="footer-info-block">
+      <span class="footer-brand">CheckGym V2</span>
+      <p class="footer-copy">© 2026 원알엠스포츠. All rights reserved. Powered by CheckGym Core.</p>
+
+      <div class="footer-sns">
+        <a class="footer-sns-link" href="https://www.instagram.com/checkgym.new/" target="_blank" rel="noopener noreferrer" aria-label="체크짐 인스타그램">
+          <svg class="footer-sns-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+          <span>인스타그램</span>
+        </a>
+        <a class="footer-sns-link" href="https://blog.naver.com/happy4season" target="_blank" rel="noopener noreferrer" aria-label="체크짐 네이버 블로그">
+          <svg class="footer-sns-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span>블로그</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-details-grid">
+      <div>
+        <div class="footer-detail-label">회사명</div>
+        <div class="footer-detail-val">원알엠스포츠</div>
+      </div>
+      <div>
+        <div class="footer-detail-label">대표이사</div>
+        <div class="footer-detail-val">박경준</div>
+      </div>
+      <div>
+        <div class="footer-detail-label">고객 센터</div>
+        <div class="footer-detail-val">010-9209-0448</div>
+      </div>
+      <div>
+        <div class="footer-detail-label">팩스 번호</div>
+        <div class="footer-detail-val">0504-433-9844</div>
+      </div>
+      <div>
+        <div class="footer-detail-label">이메일 문의</div>
+        <div class="footer-detail-val">onermsports@naver.com</div>
+      </div>
+      <div>
+        <div class="footer-detail-label">본사 주소</div>
+        <div class="footer-detail-val">인천시 연수구 컨벤시아대로 165 포스코타워 26층</div>
+      </div>
+    </div>
+  </div>
 </footer>
 
-<script>
-(function(){
-  // 마퀴 텍스트 채우기
-  document.querySelectorAll('[data-marquee]').forEach(function(el){
-    var h=''; for(var i=0;i<16;i++){ h+='<span>CHECKGYM V2</span>'; } el.innerHTML=h;
-  });
-  // 헤더 고정 + TOP 버튼
-  var header=document.getElementById('header'), topBtn=document.getElementById('topBtn');
-  function onScroll(){
-    var y=window.scrollY||document.documentElement.scrollTop;
-    header.classList.toggle('Fixed', y>120);
-    topBtn.classList.toggle('show', y>600);
-  }
-  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
-  topBtn.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
-  // 모바일 메뉴: 링크 클릭 시 닫기
-  var chk=document.getElementById('check');
-  document.querySelectorAll('nav ul a').forEach(function(a){ a.addEventListener('click', function(){ chk.checked=false; }); });
-  // 스크롤 스파이
-  var links=document.querySelectorAll('nav a[data-nav]');
-  var secs=[]; links.forEach(function(a){ var s=document.getElementById(a.getAttribute('data-nav')); if(s) secs.push([s,a]); });
-  if('IntersectionObserver' in window){
-    var spy=new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting){ links.forEach(function(a){a.classList.remove('actives');}); secs.forEach(function(p){ if(p[0]===e.target) p[1].classList.add('actives'); }); } });
-    },{rootMargin:'-40% 0px -55% 0px'});
-    secs.forEach(function(p){ spy.observe(p[0]); });
-    // 리빌
-    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },{threshold:.12});
-    document.querySelectorAll('.rv:not(.in)').forEach(function(el){ io.observe(el); });
-  } else {
-    document.querySelectorAll('.rv').forEach(function(el){ el.classList.add('in'); });
-  }
-  // 폼 (초안: 전송 없이 안내만)
-  function phoneOk(v){ return /^0\d{1,2}-?\d{3,4}-?\d{4}$/.test(v.trim()); }
-  var form=document.getElementById('contactForm'), msg=document.getElementById('formMsg');
-  form.addEventListener('submit', function(ev){
-    ev.preventDefault();
-    if(!document.getElementById('agree').checked){ msg.textContent='개인정보 수집·이용에 동의해 주세요.'; return; }
-    if(!document.getElementById('f-name').value.trim()){ msg.textContent='담당자 성함을 입력해 주세요.'; return; }
-    if(!phoneOk(document.getElementById('f-phone').value)){ msg.textContent='연락처를 010-0000-0000 형식으로 입력해 주세요.'; return; }
-    if(!document.getElementById('f-club').value.trim()){ msg.textContent='클럽명을 입력해 주세요.'; return; }
-    msg.textContent='초안 화면입니다. 실제 사이트에서는 이 자리에서 상담 신청이 접수됩니다.';
-  });
-  document.getElementById('quickForm').addEventListener('submit', function(ev){
-    ev.preventDefault();
-    if(!document.getElementById('q-agree').checked){ document.getElementById('q-agree').focus(); return; }
-    document.getElementById('contact').scrollIntoView({behavior:'smooth'});
-    msg.textContent='아래 양식에서 상담을 신청해 주세요.';
-  });
-  document.getElementById('privacyBtn').addEventListener('click', function(){
-    msg.textContent='수집 항목: 성함·연락처·클럽명 / 목적: 도입 상담 / 보유 기간: 상담 완료 후 즉시 파기';
-    msg.scrollIntoView({behavior:'smooth', block:'center'});
-  });
-})();
-</script>
+<!-- Mobile Floating Action Bar -->
+<div class="mobile-floating-bar">
+  <a href="tel:010-9209-0448" class="floating-action-btn phone">
+    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92"/></svg>
+    <span>간편 전화 상담</span>
+  </a>
+</div>
 
+<script>
+// PHP 설정을 JS로 전달 (견적 계산기가 사용)
+window.LANDING_SETTINGS = {"program_fees":{"monthly_rate":30000,"yearly_total":240000,"yearly_months_free":2,"two_years_total":380000,"two_years_months_free":2},"hardware_solutions":{"general_face":1200000,"general_kiosk":540000,"general_touch":500000,"premium_face":2500000,"premium_kiosk":780000,"premium_fingerprint":1200000},"bonus_benefits":{"touch_bonus_months":3,"two_device_bonus_months":4,"three_device_bonus_months":6}};
+</script>
+<script src="assets/landing/calc.js?v=1784482394"></script>
+<script src="assets/landing/landing.js?v=1786404267"></script>
 </body>
 </html>
